@@ -7,19 +7,46 @@ from matplotlib import style
 from sklearn import svm,datasets
 style.use("ggplot")
 # Assume eeg is present in a vector sig
-L=10	#10
-w=128   #128
-delta=8 #8
+L=10	#10             #10
+w=256000   #128			#256000
+delta=4000 #8			#8000
 #For Tsallis entropy
-q= input("Enter q for Tsallis Entropy")	#5
-# sig = np.zeros(1024)
+# q= int(input("Enter q for Tsallis Entropy"))	#5
+q=3
+# sig_len = 3072
+# # sig = np.zeros(1024)
+# # for j in range (0,1023):
+# # 	sig[j] = random()
+# sig = np.zeros(sig_len)
 # for j in range (0,1023):
 # 	sig[j] = random()
-sig = np.zeros(2048)
-for j in range (0,1023):
-	sig[j] = random()
-for j in range (1024,2047):
-	sig[j] = 0.5	
+# for j in range (1024,2047):
+# 	sig[j] = 0.5333
+# for j in range (2048,3071):
+# 	sig[j] = np.random.uniform(0,2)		
+
+## Reading the signal from a txt file
+file_name = input("Data File: \n")
+# file_name = 's5t1.txt'
+f = open (file_name , 'r')
+print(f)
+sig = []
+xs =  []
+j=1
+for line in f:
+
+	for word in line.split():	
+				#print(word)
+				sig.append(float(word))
+
+for i in range(1,len(sig)+1):
+	xs.append(i)
+
+
+print(len(sig))
+
+
+##Entropy calculations
 def sig_entropy ( L , w, delta, sig):
 
 	entropy = []
@@ -35,6 +62,7 @@ def sig_entropy ( L , w, delta, sig):
 		#sh_entropy[m] = partition_entropy(partition,L,q)[0]
 		#ts_entropy[m] = partition_entropy(partition,L,q)[0]
 		entropy.append(partition_entropy(partition,L,q,maxp,minp))
+		print(m/M)
 	#print entropy
 	return entropy
 
@@ -90,58 +118,69 @@ for seg in range (0,len(signal_entropy)-1):
 #plt.plot(sig)
 M = len(signal_entropy)-1
 x = []
-train_len = int(M/10) + M - int(9*M/10)
-train_data = np.zeros((train_len,2))
-ind=0
-acc = 0
-se_train = []
-se_test = np.zeros((M-train_len,2))
+
 for f in range (0,M) : 
 	x.append(w + f*delta)
-for k in range (0,int(M/10)):
-	train_data[ind][0]=x[k]
-	train_data[ind][1]=se[k]
-	# train_data[ind][0]=se[k]
-	# train_data[ind][1]=x[k]
-	se_train.append(0)
-	ind = ind+1
-for k in range (int(M/10),int(9*M/10)):
-	se_test[acc][0] = x[k]
-	se_test[acc][1] = se[k]
-	acc = acc + 1
-for k in range (int(9*M/10),M):
-	train_data[ind][0]=x[k]
-	train_data[ind][1]=se[k]
-	# train_data[ind][0]=se[k]
-	# train_data[ind][1]=x[k]
-	se_train.append(2)
-	ind = ind+1
-clf = svm.SVC(kernel='linear',C = 1.0)
-# train_data = [[0,0],[1,1]]
-# yy = [0,1]
-# print train_data
-# print se_train
-# print se_test
-train_data_arr = np.array(train_data)
-clf.fit(train_data_arr,se_train)
-# se_test.reshape(1,-1)
-# a=[[2,50]]
-# a = []
-# print clf.predict(se_test)
-coef = clf.coef_[0]
-plotse = np.zeros((2,M-train_len))
-for l in range (0,acc-1):
-	# print (se_test[l][0],se_test[l][1])
-	plotse[0][l]=se_test[l][0]
-	plotse[1][l]=se_test[l][1]
-lin_slope = -coef[0]/coef[1]
-xline = np.linspace(1075,1077)
-yline = lin_slope*xline - clf.intercept_[0]/coef[1]	
+
+
+
+
+
+## Support vector machine implementation	
+# train_len = int(M/10) + M - int(9*M/10)
+# train_data = np.zeros((train_len,2))
+# ind=0
+# acc = 0
+# se_train = []
+# se_test = np.zeros((M-train_len,2))
+# for k in range (0,int(M/10)):
+# 	train_data[ind][0]=x[k]
+# 	train_data[ind][1]=se[k]
+# 	# train_data[ind][0]=se[k]
+# 	# train_data[ind][1]=x[k]
+# 	se_train.append(0)
+# 	ind = ind+1
+# for k in range (int(M/10),int(9*M/10)):
+# 	se_test[acc][0] = x[k]
+# 	se_test[acc][1] = se[k]
+# 	acc = acc + 1
+# for k in range (int(9*M/10),M):
+# 	train_data[ind][0]=x[k]
+# 	train_data[ind][1]=se[k]
+# 	# train_data[ind][0]=se[k]
+# 	# train_data[ind][1]=x[k]
+# 	se_train.append(2)
+# 	ind = ind+1
+# clf = svm.SVC(kernel='linear',C = 1.0)
+# # train_data = [[0,0],[1,1]]
+# # yy = [0,1]
+# # print train_data
+# # print se_train
+# # print se_test
+# train_data_arr = np.array(train_data)
+# clf.fit(train_data_arr,se_train)
+# # se_test.reshape(1,-1)
+# # a=[[2,50]]
+# # a = []
+# # print clf.predict(se_test)
+# coef = clf.coef_[0]
+# plotse = np.zeros((2,M-train_len))
+# for l in range (0,acc-1):
+# 	# print (se_test[l][0],se_test[l][1])
+# 	plotse[0][l]=se_test[l][0]
+# 	plotse[1][l]=se_test[l][1]
+# lin_slope = -coef[0]/coef[1]
+# xline = np.linspace(1075.8,1076.1)
+# yline = lin_slope*xline - clf.intercept_[0]/coef[1]	
 # print plotse	
 # plt.plot(plotse[0],plotse[1],'ro')
-plt.plot(xline,yline,'g')
-plt.scatter(se_test[:,0],se_test[:,1],c='y')	
-# # plt.plot(x,se,'ro')
-# # plt.plot(x,te)
-# # plt.plot(sig)
+# plt.plot(xline,yline,'g')
+# plt.scatter(se_test[:,0],se_test[:,1],c='y')
+
+
+
+#PLotting/Visualzing the data	
+#plt.plot(x,se)
+plt.plot(x,te)
+#plt.plot(sig)
 plt.show()
