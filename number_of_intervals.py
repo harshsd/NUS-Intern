@@ -104,7 +104,7 @@ for line in f:
 for i in range(1,len(sig)+1):
 	xs.append(i)
 
-lenghts = [5,10,30,75]
+lenghts = [5,10,20,30]
 
 for L in lenghts:
 	#print sig
@@ -183,6 +183,6 @@ for L in lenghts:
 #PLotting/Visualzing the data	
 	#plt.plot(x,se)
 	plt.plot(x,te)
-	plt.legend(L)
+	plt.legend(lenghts)
 #plt.plot(sig)
 plt.show()

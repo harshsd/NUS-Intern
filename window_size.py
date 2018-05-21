@@ -5,26 +5,14 @@ from random import *
 import matplotlib.pyplot as plt
 from matplotlib import style
 from sklearn import svm,datasets
+import os
 
+os.chdir('/home/harsh/Desktop/Harsh_Deshpande/Readable_Data')
 L=10
 delta=4000
 q=3
 
-file_name = input("Data File: \n")
-f = open (file_name , 'r')
-sig = []
-xs =  []
-j=1
-for line in f:
 
-	for word in line.split():	
-				#print(word)
-				sig.append(float(word))
-
-for i in range(1,len(sig)+1):
-	xs.append(i)
-
-entropy = []
 
 def partition_entropy( partition,L,q,maxp,minp):
 	
@@ -66,25 +54,47 @@ def Tsallis_entropy(partition,slot_height,maxp,minp,q):
 	ts_ent = ts_ent/(q-1)		
 	return ts_ent		
 
-for ww in range (1,len(sig)//1000):
+labels = []
+for o in range(1,2):
+	for i in range(1,10):
+		labels.append(str(i)+str(o))
+		# file_name = input("Data File: \n")
+		file_name = 's'+str(i)+'t'+str(o)+'.txt'
+		f = open (file_name , 'r')
+		sig = []
+		xs =  []
+		j=1
+		for line in f:
 
-	w = ww*1000
-	print (w/len(sig))
-	m = 0
-	partition = sig[m*delta:(w+(m*delta))+1]
-	maxp = np.amax(sig)
-	minp = np.amin(sig)
-	entropy.append(partition_entropy(partition,L,q,maxp,minp))
-	se = []
-	te = []
-	for seg in range (0,len(entropy)-1):
-		se.append(entropy[seg][0])
-		te.append(entropy[seg][1])	
-	M = len(entropy)-1
-	x = []
+			for word in line.split():	
+						#print(word)
+						sig.append(float(word))
 
-	for f in range (0,M) : 
-		x.append(w + f*delta)	
-plt.plot(x , se)
-#plt.holdon()	
+		for i in range(1,len(sig)+1):
+			xs.append(i)
+
+		entropy = []	
+		se = []
+		te = []
+		x = []
+		for ww in range (100,1024):    #1164500
+
+
+			w = ww
+			print (w/1024)
+			m = 10
+			partition = sig[m*delta:(w+(m*delta))+1]
+			maxp = np.amax(sig)
+			minp = np.amin(sig)
+			entropy=(partition_entropy(partition,L,q,maxp,minp))
+			# print(entropy[0])
+			se.append(entropy[0])
+			te.append(entropy[1])
+			# print(se[w-1])
+			M = len(entropy)-1
+			x.append(w)
+			#lt.plot(x , se)
+			plt.plot(x , te)
+plt.legend(labels)
+	#plt.holdon()	
 plt.show()	
