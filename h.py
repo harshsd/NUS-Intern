@@ -11,7 +11,7 @@ L=10	#10             #10
 w=256000   #128			#256000
 delta=4000 #8			#8000
 #For Tsallis entropy
-# q= int(input("Enter q for Tsallis Entropy"))	#5
+# q= int(input("Enter q for Tsallis Entropy"))	#5 #1164500
 q=3
 # sig_len = 3072
 # # sig = np.zeros(1024)
