@@ -10,7 +10,7 @@ import itertools
 
 
 style.use("ggplot")
-os.chdir('/home/harsh/Desktop/Harsh_Deshpande/Readable_Data')
+#os.chdir('/home/harsh/Desktop/Harsh_Deshpande/Readable_Data')
 
 
 #Constants
@@ -146,7 +146,7 @@ permutation_slope_array = []
 for sub in range (1,31):
 	for ch in range (1,25):
 		for turn in range (1,3):	
-			file_name = 's'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
+			file_name = 's'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'  #change_here go to dir and file_name
 			print (file_name)
 			f = open (file_name , 'r')
 			sig = []

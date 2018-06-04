@@ -3,7 +3,7 @@ import os
 from PyQt5.QtWidgets import (QWidget, QToolTip, 
     QPushButton, QApplication)
 from PyQt5.QtGui import QFont    
-from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication, QInputDialog, QLineEdit
+from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication, QInputDialog, QLineEdit, QFileDialog
 from PyQt5.QtCore import pyqtSlot
 import numpy as np
 import math
@@ -24,8 +24,15 @@ class Example(QWidget):
         self.w_in_s = 0.5
         self.del_in_s = 0.5
         self.L = 10
+        self.q = 2
+        self.alpha = 0.5
+        self.d = 3
+        self.delay = 2
         self.file_name = "Shit"
         self.sig = []
+        self.entropy = "shannon"
+        self.w = int(self.w_in_s*250)
+        self.delta = int(self.del_in_s*250)
         self.initUI()
         
         
@@ -34,27 +41,32 @@ class Example(QWidget):
         QToolTip.setFont(QFont('SansSerif', 10))
         
         self.setToolTip('This is a <b>QWidget</b> widget')
+        self.setWindowTitle("GUI for Time Dependent Entropy")
+        btn1 = QPushButton('Select Entropy', self)
+        btn1.setToolTip('Select Entropy to plot')
+        btn1.clicked.connect(self.on_click_entropy_select)
+        btn1.resize(btn1.sizeHint())
+        btn1.move(50, 50)
         
-        btn = QPushButton('Window_Size', self)
-        btn.setToolTip('Push to enter Window Size')
-        btn.clicked.connect(self.on_click)
-        btn.resize(btn.sizeHint())
-        btn.move(50, 50)
+        btn2 = QPushButton('Parameter_Selction', self)
+        btn2.setToolTip('Push to edit relevant parameters')
+        btn2.clicked.connect(self.on_click)
+        btn2.resize(btn2.sizeHint())
+        btn2.move(250, 50)
 
-        btn = QPushButton('Read_File', self)
-        btn.setToolTip('Push to read the file')
-        btn.clicked.connect(self.on_click_read)
-        btn.resize(btn.sizeHint())
-        btn.move(150, 50)
+        btn3 = QPushButton('Select and Read_File', self)
+        btn3.setToolTip('Push to read the file')
+        btn3.clicked.connect(self.on_click_read)
+        btn3.resize(btn3.sizeHint())
+        btn3.move(50, 100)
 
-        btn = QPushButton('Calculate and plot', self)
-        btn.setToolTip('Push to plot')
-        btn.clicked.connect(self.on_click_run)
-        btn.resize(btn.sizeHint())
-        btn.move(50, 150)       
+        btn4 = QPushButton('Calculate and plot', self)
+        btn4.setToolTip('Push to plot')
+        btn4.clicked.connect(self.on_click_run)
+        btn4.resize(btn4.sizeHint())
+        btn4.move(250, 100)       
         
         # self.setGeometry(self.left, self.top, self.width, self.height)
-        # self.setWindowTitle("GUI for Time Dependent Entropy")
         # a=self.getInteger()
         # #self.getText()
         # b=self.getDouble()
@@ -77,22 +89,28 @@ class Example(QWidget):
         else:
             event.ignore()  
 
-    def getInteger(self,par_name):
+    def getInteger(self,par_name,curr_val):
         print(self.w_in_s)
-        i, okPressed = QInputDialog.getInt(self, "Insert Integer",par_name, 5, 0, 100, 1)
+        i, okPressed = QInputDialog.getInt(self, "Insert Integer",par_name,curr_val, 0, 100, 1)
         if okPressed:
             return i
+        else :
+            return curr_val    
  
-    def getDouble(self,par_name):
-        d, okPressed = QInputDialog.getDouble(self, "Insert Double",par_name, 0.50, 0, 100, 10)
+    def getDouble(self,par_name,curr_val):
+        d, okPressed = QInputDialog.getDouble(self, "Insert Double",par_name, curr_val, 0, 100, 10)
         if okPressed:
             return d
+        else :
+            return curr_val    
  
-    def getChoice(self):
-        items = ("Red","Blue","Green")
-        item, okPressed = QInputDialog.getItem(self, "Get item","Color:", items, 0, False)
+    def getEntropyChoice(self):
+        items = ("shannon","tsallis","renyi","permutation")
+        item, okPressed = QInputDialog.getItem(self, "Entropy Selection","Entropy", items, 0, False)
         if okPressed and item:
-            print(item)
+            return item
+        else :
+        	return "shannon"    
  
     def getText(self):
         text, okPressed = QInputDialog.getText(self, "Give file_name","File Name:", QLineEdit.Normal, "s5t1c1.txt")
@@ -100,28 +118,41 @@ class Example(QWidget):
             return text
                     
     @pyqtSlot()
-    def on_click(self):
-       self.w_in_s = self.getDouble("Window_Size")
-       self.del_in_s = self.getDouble("Delta_in_S")
-       self.L = self.getInteger("Number of partitions")
-       self.file_name = self.getText()  
 
-    def on_click_read(self):
-    	self.sig = Read_File(self.file_name)  
-    	print (len(self.sig))
+    def on_click_entropy_select(self):
+    	self.entropy = self.getEntropyChoice()
+
+    def on_click(self):
+       self.w_in_s = self.getDouble("Window_Size",self.w_in_s)
+       self.del_in_s = self.getDouble("Delta_in_S",self.del_in_s)
+       self.L = self.getInteger("Number of partitions",self.L)
+       if (self.entropy == "tsallis"):
+       	   self.q = self.getDouble("q for Tsallis",self.q)
+       elif (self.entropy == "renyi"):
+           self.alpha = self.getDouble("alpha for renyi",self.alpha)
+       elif (self.entropy == "permutation"):
+           self.d = self.getInteger("d for permutation",self.d)
+           self.delay = self.getInteger("delay for permutation",self.delay)    	   
+         
+
+    def on_click_read(self):    
+        options = QFileDialog.Options()
+        options |= QFileDialog.DontUseNativeDialog
+        fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "/media/harsh/DATA/Readable_Data","All Files (*);;Python Files (*.py)", options=options)
+        if fileName:
+            print(fileName)
+        self.file_name = fileName    
+        self.sig = Read_File(self.file_name)  
+        print (len(self.sig))
 
     def on_click_run(self):
-    	w = int(self.w_in_s*250)
-    	delta = int(self.del_in_s*250)
-    	sh_ent = sig_entropy (self.L,w,delta,self.sig, "shannon", q=0)
-    	plt.subplot(2,1,1)
-    	plt.plot (sh_ent)
-    	plt.subplot(2,2,2)
-    	plt.plot (self.sig)
+    	sig_ent = sig_entropy (self.L,self.w,self.delta,self.sig, self.entropy, self.q,self.alpha,self.d,self.delay)
+    	# plt.subplot(2,1,1)
+    	plt.plot (sig_ent)
     	plt.show() 	 
 
 def Read_File (file_name):
-	os.chdir("/media/harsh/DATA/Readable_Data/Unfiltered_Data")
+	#os.chdir("/media/harsh/DATA/Readable_Data/Unfiltered_Data")
 	f = open (file_name , 'r')
 	sig = []
 	for line in f:
@@ -130,7 +161,7 @@ def Read_File (file_name):
 				sig.append(float(word))
 	return sig			
 
-def sig_entropy ( L , w, delta, sig, entropy_name,q):
+def sig_entropy ( L , w, delta, sig, entropy_name,q,alpha,d,delay):
 	#entropy_name = shannon/tsallis/renyi/permutation
 
 	entropy = []
@@ -141,12 +172,12 @@ def sig_entropy ( L , w, delta, sig, entropy_name,q):
 	#print (maxp,minp)
 	for m in range (0,M):
 		partition = sig[m*delta:(w+(m*delta))+1]
-		entropy.append(partition_entropy(partition,L,q,entropy_name))
+		entropy.append(partition_entropy(partition,L,q,entropy_name,alpha,d,delay))
 		print(m/M)
 		# print(entropy_name)
 	return entropy
 
-def partition_entropy( partition,L,q,entropy_name):
+def partition_entropy( partition,L,q,entropy_name,alpha,d,delay):
 	
 		maxp = np.amax(partition)
 		minp = np.amin(partition)
@@ -237,7 +268,7 @@ def permutation_entropy(L,time_series, m, delay):
 
     c = [element for element in c if element != 0]
     p = np.divide(np.array(c), float(sum(c)))
-    pe = -sum(pow(p,alpha)/(1-alpha))
+    pe = -sum(p*np.log(p))
     return pe
         
 if __name__ == '__main__':
