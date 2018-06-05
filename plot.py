@@ -9,7 +9,11 @@ import os
 import itertools
 from matplotlib.ticker import MaxNLocator
 from collections import namedtuple
-os.chdir('/home/harsh/Desktop/Harsh_Deshpande/Readable_Data')
+
+Entropy = "Alpha"
+entropy = "alpha"
+
+os.chdir('/home/harsh/Desktop/Harsh_Deshpande/Readable_Data/'+Entropy)
 
 
 s_slopes = []

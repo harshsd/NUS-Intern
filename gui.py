@@ -4,17 +4,19 @@ from PyQt5.QtWidgets import (QWidget, QToolTip,
     QPushButton, QApplication)
 from PyQt5.QtGui import QFont    
 from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication, QInputDialog, QLineEdit, QFileDialog
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtCore import pyqtSlot, QThread
 import numpy as np
 import math
 import matplotlib.pyplot as plt
 from matplotlib import style
 from scipy import stats
 import itertools
+#import multiprocessing
 
 class Example(QWidget):
     
     def __init__(self):
+        self.num = 0
         super().__init__()
         self.left = 10
         self.top = 10
@@ -34,6 +36,9 @@ class Example(QWidget):
         self.w = int(self.w_in_s*250)
         self.delta = int(self.del_in_s*250)
         self.initUI()
+        self.to_be_plotted = []
+        self.a = self.plot()
+        #self.pool = multiprocessing.Pool()
         
         
     def initUI(self):
@@ -64,7 +69,13 @@ class Example(QWidget):
         btn4.setToolTip('Push to plot')
         btn4.clicked.connect(self.on_click_run)
         btn4.resize(btn4.sizeHint())
-        btn4.move(250, 100)       
+        btn4.move(250, 100)  
+
+        btn5 = QPushButton('Clean Plots', self)
+        btn5.setToolTip('Push to clean')
+        btn5.clicked.connect(self.on_click_clear)
+        btn5.resize(btn5.sizeHint())
+        btn5.move(450, 100)       
         
         # self.setGeometry(self.left, self.top, self.width, self.height)
         # a=self.getInteger()
@@ -119,6 +130,9 @@ class Example(QWidget):
                     
     @pyqtSlot()
 
+    def on_click_clear(self):
+    	self.to_be_plotted=[]
+
     def on_click_entropy_select(self):
     	self.entropy = self.getEntropyChoice()
 
@@ -146,10 +160,37 @@ class Example(QWidget):
         print (len(self.sig))
 
     def on_click_run(self):
+    	#self.a.close()
+    	print ("Wait , Calculating")
     	sig_ent = sig_entropy (self.L,self.w,self.delta,self.sig, self.entropy, self.q,self.alpha,self.d,self.delay)
-    	# plt.subplot(2,1,1)
-    	plt.plot (sig_ent)
-    	plt.show() 	 
+    	print ("done")
+    	self.to_be_plotted.append(sig_ent)
+    	self.a = self.plot()
+
+    def plot(self):
+    	for i in range (0,len(self.to_be_plotted)) :
+    		plt.figure()
+    		plt.plot(self.to_be_plotted[0])
+    	plt.show()	
+    	
+class PlotterThread(QThread):
+	def __init__(self,sig):
+		super(PlotterThread,self).__init__()
+		self.sig = sig
+		#plt.show()
+
+	def run(self):
+		plt.figure()
+		plt.plot (self.sig)
+		print ("done")
+		plt.show()
+
+	def __del__(self):
+		print ("exiting")	
+
+
+
+
 
 def Read_File (file_name):
 	#os.chdir("/media/harsh/DATA/Readable_Data/Unfiltered_Data")
@@ -168,12 +209,12 @@ def sig_entropy ( L , w, delta, sig, entropy_name,q,alpha,d,delay):
 	K = len(sig)
 	M = (K-w)//delta  # Should be an int
 	M = int(M)
-	print (M)
+	#print (M)
 	#print (maxp,minp)
 	for m in range (0,M):
 		partition = sig[m*delta:(w+(m*delta))+1]
 		entropy.append(partition_entropy(partition,L,q,entropy_name,alpha,d,delay))
-		print(m/M)
+		#print(m/M)
 		# print(entropy_name)
 	return entropy
 
