@@ -90,7 +90,7 @@ class Example(QWidget):
             event.ignore()  
 
     def getInteger(self,par_name,curr_val):
-        print(self.w_in_s)
+        #print(self.w_in_s)
         i, okPressed = QInputDialog.getInt(self, "Insert Integer",par_name,curr_val, 0, 100, 1)
         if okPressed:
             return i
