@@ -55,7 +55,7 @@ class Example(QWidget):
 		btn1.resize(btn1.sizeHint())
 		btn1.move(50, 50)
 		
-		btn2 = QPushButton('Parameter_Selction', self)
+		btn2 = QPushButton('Parameter_Selection', self)
 		btn2.setToolTip('Push to edit relevant parameters')
 		btn2.clicked.connect(self.on_click_get_par)
 		btn2.resize(btn2.sizeHint())
