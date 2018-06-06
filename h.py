@@ -17,7 +17,7 @@ style.use("ggplot")
 
 
 #Constants
-'''w and delta are the window lenghts and window shift for time dependent entropy calculations. 
+'''w and alpha are the window lenghts and window shift for time dependent entropy calculations. 
 L is the number of intervals in which he amplitude is divided
 q is the q-index for tsallis entropy
 alpha is alpha for renyi entropy
@@ -27,7 +27,7 @@ w_in_s = 2
 del_in_s = 2
 L=5	#10             #10
 w=int(w_in_s*250)   #128			#256000
-delta=int(del_in_s*250) #8			#8000
+alpha=int(del_in_s*250) #8			#8000
 q=3
 alpha = 0.5
 d = 3
@@ -37,16 +37,16 @@ delay = 2
 
 
 ##Entropy calculations
-def sig_entropy ( L , w, delta, sig, entropy_name):
+def sig_entropy ( L , w, alpha, sig, entropy_name):
 	#entropy_name = shannon/tsallis/renyi/permutation
 
 	entropy = []
 	K = len(sig)
 	M = (K-w)//delta  # Should be an int
-	
+	M = int (M)
 	#print (maxp,minp)
 	for m in range (0,M):
-		partition = sig[m*delta:(w+(m*delta))+1]
+		partition = sig[m*alpha:(w+(m*alpha))+1]
 		entropy.append(partition_entropy(partition,L,q,entropy_name))
 		# print(m/M)
 		# print(entropy_name)
@@ -150,7 +150,7 @@ t_v_slope = []
 r_v_slope = []
 per_v_slope = []
 
-sub = int(input("Enter Subject number: \n"))
+#sub = int(input("Enter Subject number: \n"))
 
 for sub in range (1,31):
 	for ch in range (1,25):
@@ -168,18 +168,18 @@ for sub in range (1,31):
 							#print(word)
 							sig.append(float(word))
 
-			sh_ent = sig_entropy(L,w,delta,sig,"shannon")
-			print("shannon")
-			te_ent = sig_entropy(L,w,delta,sig,"tsallis")
-			print("tsallis")
-			ren_ent= sig_entropy(L,w,delta,sig,"renyi")
+			# sh_ent = sig_entropy(L,w,alpha,sig,"shannon")
+			# print("shannon")
+			# te_ent = sig_entropy(L,w,alpha,sig,"tsallis")
+			# print("tsallis")
+			ren_ent= sig_entropy(L,w,alpha,sig,"renyi")
 			print("renyi")
-			per_ent= sig_entropy(L,w,delta,sig,"permutation")
-			print("permutation")
+			# per_ent= sig_entropy(L,w,alpha,sig,"permutation")
+			# print("permutation")
 			#print signal_entropy
 			#print len(signal_entropy[0])
 			#plt.plot(sig)
-			M = len(per_ent)  # Lenght of all entropies is the same
+			M = len(ren_ent)  # Lenght of all entropies is the same
 			x = np.arange(M)
 			# plt.plot(ren_ent)
 			# plt.show()
@@ -189,40 +189,40 @@ for sub in range (1,31):
 
 			# Calculating and printing entropies
 
-			shannon_line = np.polyfit(x, sh_ent, 1, full=True)
-			shannon_slope = shannon_line[0][0]
+			# shannon_line = np.polyfit(x, sh_ent, 1, full=True)
+			# shannon_slope = shannon_line[0][0]
 
-			tsallis_line = np.polyfit(x , te_ent , 1, full = True)
-			tsallis_slope = tsallis_line[0][0]
+			# tsallis_line = np.polyfit(x , te_ent , 1, full = True)
+			# tsallis_slope = tsallis_line[0][0]
 
 			renyi_line = np.polyfit(x, ren_ent, 1 , full=True)
 			renyi_slope = renyi_line [0][0]
 
-			permutation_line = np.polyfit (x, per_ent, 1, full=True)
-			permutation_slope = permutation_line[0][0]
+			# permutation_line = np.polyfit (x, per_ent, 1, full=True)
+			# permutation_slope = permutation_line[0][0]
 
 			os.chdir('/media/harsh/DATA/Readable_Data/Results_Filtered/Gamma')
 
-			print("shannon")
-			shannon_file = open ("gamma_shannon_slopes.txt",'a+')		#change here
-			shannon_file.write(str(shannon_slope))
-			shannon_file.write("\n")
-			shannon_file.close()
-			print("tsallis")
-			tsallis_file = open ("gamma_tsallis_slopes.txt",'a+')
-			tsallis_file.write(str(tsallis_slope))
-			tsallis_file.write("\n")
-			tsallis_file.close()
+			# print("shannon")
+			# shannon_file = open ("gamma_shannon_slopes.txt",'a+')		#change here
+			# shannon_file.write(str(shannon_slope))
+			# shannon_file.write("\n")
+			# shannon_file.close()
+			# print("tsallis")
+			# tsallis_file = open ("gamma_tsallis_slopes.txt",'a+')
+			# tsallis_file.write(str(tsallis_slope))
+			# tsallis_file.write("\n")
+			# tsallis_file.close()
 			print("renyi")
-			renyi_file = open ("gamma_renyi_slopes.txt",'a+')
+			renyi_file = open ("gamma_renyi_slopes1.txt",'a+')
 			renyi_file.write(str(renyi_slope))
 			renyi_file.write("\n")
 			renyi_file.close()
-			print("permutation")
-			permutation_file = open ("gamma_permutation_slopes.txt",'a+')
-			permutation_file.write(str(permutation_slope))
-			permutation_file.write("\n")
-			permutation_file.close()
+			# print("permutation")
+			# permutation_file = open ("gamma_permutation_slopes.txt",'a+')
+			# permutation_file.write(str(permutation_slope))
+			# permutation_file.write("\n")
+			# permutation_file.close()
 
 			sh_ent_var = []
 			tsa_ent_var = []
@@ -231,27 +231,27 @@ for sub in range (1,31):
 
 
 			for start in range (0,M-100):
-				per_ent_var.append(np.var(per_ent[start:start+100	]))
+			# 	per_ent_var.append(np.var(per_ent[start:start+100	]))
 				ren_ent_var.append(np.var(ren_ent[start:start+100	]))
-				tsa_ent_var.append(np.var(te_ent[start:start+100	]))
-				sh_ent_var.append(np.var(sh_ent[start:start+100	]))
+				# tsa_ent_var.append(np.var(te_ent[start:start+100	]))
+				# sh_ent_var.append(np.var(sh_ent[start:start+100	]))
 			# plt.plot(ren_ent_var)
 			# plt.show()	
 
-			variance_line_per = np.polyfit (np.arange(len(per_ent_var)),per_ent_var,1,full=True)
-			variance_slope_per = variance_line_per[0][0]
-			per_v_slope.append(variance_slope_per)
+			# variance_line_per = np.polyfit (np.arange(len(per_ent_var)),per_ent_var,1,full=True)
+			# variance_slope_per = variance_line_per[0][0]
+			# per_v_slope.append(variance_slope_per)
 			#xx = np.arange(len(per_ent_var))
 			#yy_per = variance_line_per[0][0]*xx + variance_line_per[0][1]
 
-			variance_line_sh = np.polyfit (np.arange(len(sh_ent_var)),sh_ent_var,1,full=True)
-			variance_slope_sh = variance_line_sh[0][0]
-			s_v_slope.append(variance_slope_sh)
+			# variance_line_sh = np.polyfit (np.arange(len(sh_ent_var)),sh_ent_var,1,full=True)
+			# variance_slope_sh = variance_line_sh[0][0]
+			# s_v_slope.append(variance_slope_sh)
 			#yy_sh = variance_line_sh[0][0]*xx + variance_line_sh[0][1]
 
-			variance_line_te = np.polyfit (np.arange(len(tsa_ent_var)),tsa_ent_var,1,full=True)
-			variance_slope_te = variance_line_te[0][0]
-			t_v_slope.append(variance_slope_te)
+			# variance_line_te = np.polyfit (np.arange(len(tsa_ent_var)),tsa_ent_var,1,full=True)
+			# variance_slope_te = variance_line_te[0][0]
+			# t_v_slope.append(variance_slope_te)
 			#yy_tsa = variance_line_te[0][0]*xx + variance_line_te[0][1]
 
 			variance_line_ren = np.polyfit (np.arange(len(ren_ent_var)),ren_ent_var,1,full=True)
@@ -259,22 +259,22 @@ for sub in range (1,31):
 			r_v_slope.append(variance_slope)
 			#yy_ren = variance_line_ren[0][0]*xx + variance_line_ren[0][1]
 
-			shannon_file = open ("gamma_shannon_slopes_var.txt",'a+')		#change_here
-			shannon_file.write(str(variance_slope_sh))
-			shannon_file.write("\n")
-			shannon_file.close()
-			tsallis_file = open ("gamma_tsallis_slopes_var.txt",'a+')
-			tsallis_file.write(str(variance_slope_te))
-			tsallis_file.write("\n")
-			tsallis_file.close()
-			renyi_file = open ("gamma_renyi_slopes_var.txt",'a+')
-			renyi_file.write(str(variance_line_ren))
+			# shannon_file = open ("gamma_shannon_slopes_var.txt",'a+')		#change_here
+			# shannon_file.write(str(variance_slope_sh))
+			# shannon_file.write("\n")
+			# shannon_file.close()
+			# tsallis_file = open ("gamma_tsallis_slopes_var.txt",'a+')
+			# tsallis_file.write(str(variance_slope_te))
+			# tsallis_file.write("\n")
+			# tsallis_file.close()
+			renyi_file = open ("gamma_renyi_slopes_var1.txt",'a+')
+			renyi_file.write(str(variance_slope))
 			renyi_file.write("\n")
 			renyi_file.close()
-			permutation_file = open ("gamma_permutation_slopes_var.txt",'a+')
-			permutation_file.write(str(variance_slope))
-			permutation_file.write("\n")
-			permutation_file.close()
+			# permutation_file = open ("gamma_permutation_slopes_var.txt",'a+')
+			# permutation_file.write(str(variance_slope))
+			# permutation_file.write("\n")
+			# permutation_file.close()
 
 
 # 			print(s_v_slope)

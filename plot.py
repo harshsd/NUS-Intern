@@ -10,30 +10,30 @@ import itertools
 from matplotlib.ticker import MaxNLocator
 from collections import namedtuple
 
-Entropy = "Alpha"
-entropy = "alpha"
+Entropy = "Beta"
+entropy = "beta"
 
-os.chdir('/home/harsh/Desktop/Harsh_Deshpande/Readable_Data/'+Entropy)
-
+os.chdir('/media/harsh/DATA/Readable_Data/Results_Filtered/'+Entropy)
+#print ('/media/harsh/DATA/Readable_Data/Results_Filtered/'+Entropy)
 
 s_slopes = []
 t_slopes = []
 r_slopes = []
 p_slopes = []
 
-f = open ('shannon_slopes.txt','r')
+f = open (entropy+'_shannon_slopes_var.txt','r')
 for line in f:
     for word in line.split():
         s_slopes.append(float(word))
 f.close()
 
-f = open ('tsallis_slopes.txt','r')
+f = open (entropy+'_tsallis_slopes_var.txt','r')
 for line in f:
     for word in line.split():
         t_slopes.append(float(word))
 f.close()
 
-f = open ('renyi_slopes.txt','r')
+f = open (entropy+'_renyi_slopes_var.txt','r')
 for line in f:
     for word in line.split():
     	try:
@@ -43,7 +43,7 @@ for line in f:
     		pass
 f.close()
 
-f = open ('permutation_slopes.txt','r')
+f = open (entropy+'_permutation_slopes_var.txt','r')
 for line in f:
     for word in line.split():
         p_slopes.append(float(word))
@@ -73,7 +73,7 @@ index = np.arange(n)
 opacity = 0.5
 error_config = {'ecolor':'0.0'}
 rects1 = ax.bar (index, means, b, alpha=opacity, color='r', yerr=(0,0,0,0), error_kw=error_config,label='Mean slope')
-#rects1 = ax.bar (index+b, std, b, alpha=opacity, color='b', yerr=(0,0,0,0), error_kw=error_config,label='Standard Deviation')
+rects1 = ax.bar (index+b, std, b, alpha=opacity, color='b', yerr=(0,0,0,0), error_kw=error_config,label='Standard Deviation')
 ax.set_xlabel('Entropy')
 ax.set_ylabel('Value')
 ax.set_title('Mean slopes')
