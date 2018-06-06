@@ -1,10 +1,9 @@
 import sys
 import os
-from PyQt5.QtWidgets import (QWidget, QToolTip, 
-	QPushButton, QApplication)
-from PyQt5.QtGui import QFont    
-from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication, QInputDialog, QLineEdit, QFileDialog
-from PyQt5.QtCore import pyqtSlot, QThread
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *    
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 import numpy as np
 import math
 import matplotlib.pyplot as plt
@@ -12,6 +11,8 @@ from matplotlib import style
 from scipy import stats
 import itertools
 from multiprocessing import Process
+import time
+#from PyQt5.QtWidgets import QLabel
 
 class Example(QWidget):
 	
@@ -37,6 +38,7 @@ class Example(QWidget):
 		self.delta = int(self.del_in_s*250)
 		self.initUI()
 		self.processes = []
+		self.sig_ent = []
 		#self.a = self.plot()
 		#self.pool = multiprocessing.Pool()
 		
@@ -55,7 +57,7 @@ class Example(QWidget):
 		
 		btn2 = QPushButton('Parameter_Selction', self)
 		btn2.setToolTip('Push to edit relevant parameters')
-		btn2.clicked.connect(self.on_click)
+		btn2.clicked.connect(self.on_click_get_par)
 		btn2.resize(btn2.sizeHint())
 		btn2.move(250, 50)
 
@@ -106,6 +108,7 @@ class Example(QWidget):
 		if okPressed:
 			return i
 		else :
+			print ("cancelled")
 			return curr_val    
  
 	def getDouble(self,par_name,curr_val):
@@ -136,18 +139,20 @@ class Example(QWidget):
 	def on_click_entropy_select(self):
 		self.entropy = self.getEntropyChoice()
 
-	def on_click(self):
-	   self.w_in_s = self.getDouble("Window_Size",self.w_in_s)
-	   self.del_in_s = self.getDouble("Delta_in_S",self.del_in_s)
-	   self.L = self.getInteger("Number of partitions",self.L)
-	   if (self.entropy == "tsallis"):
-		   self.q = self.getDouble("q for Tsallis",self.q)
-	   elif (self.entropy == "renyi"):
-		   self.alpha = self.getDouble("alpha for renyi",self.alpha)
-	   elif (self.entropy == "permutation"):
-		   self.d = self.getInteger("d for permutation",self.d)
-		   self.delay = self.getInteger("delay for permutation",self.delay)        
-		 
+	def on_click_get_par(self):
+		self.w_in_s = self.getDouble("Window_Size",self.w_in_s)
+		self.del_in_s = self.getDouble("Delta_in_S",self.del_in_s)
+		self.L = self.getInteger("Number of partitions",self.L)
+		if (self.entropy == "tsallis"):
+			self.q = self.getDouble("q for Tsallis",self.q)
+		elif (self.entropy == "renyi"):
+			self.alpha = self.getDouble("alpha for renyi",self.alpha)
+		elif (self.entropy == "permutation"):
+			self.d = self.getInteger("d for permutation",self.d)
+			self.delay = self.getInteger("delay for permutation",self.delay)        
+		print (self.w_in_s , self.del_in_s)
+		self.w = int(self.w_in_s*250)
+		self.delta = int(self.del_in_s*250)
 
 	def on_click_read(self):    
 		options = QFileDialog.Options()
@@ -162,36 +167,22 @@ class Example(QWidget):
 	def on_click_run(self):
 		#self.a.close()
 		print ("Wait , Calculating")
-		sig_ent = sig_entropy (self.L,self.w,self.delta,self.sig, self.entropy, self.q,self.alpha,self.d,self.delay)
+		self.sig_ent = sig_entropy (self.L,self.w,self.delta,self.sig, self.entropy, self.q,self.alpha,self.d,self.delay)
+		print (self.L,self.w,self.delta, self.entropy, self.q,self.alpha,self.d,self.delay)
 		print ("done")
-		p = Process(target = plot, args = (sig_ent,))
+		print (len(self.sig_ent))
+		p = Process(target = plot, args = (self.sig_ent,))
 		self.processes.append(p)
 		p.start()
+		# plot(self.sig_ent)
 		print ("ready")
+					 
+
 
 def plot(sig_ent):
 	plt.figure()
 	plt.plot(sig_ent)
 	plt.show()
-		
-		
-class PlotterThread(QThread):
-	def __init__(self,sig):
-		super(PlotterThread,self).__init__()
-		self.sig = sig
-		#plt.show()
-
-	def run(self):
-		plt.figure()
-		plt.plot (self.sig)
-		print ("done")
-		plt.show()
-
-	def __del__(self):
-		print ("exiting")   
-
-
-
 
 
 def Read_File (file_name):
@@ -313,6 +304,39 @@ def permutation_entropy(L,time_series, m, delay):
 	p = np.divide(np.array(c), float(sum(c)))
 	pe = -sum(p*np.log(p))
 	return pe
+
+class InputForm(QWidget):
+	def __init__(self, parent=None):
+		super(InputForm, self).__init__(parent)
+
+		nameLabel = QLabel("Name:")
+		self.nameLine = QLineEdit()
+		self.submitButton = QPushButton("&amp;Submit")
+
+		buttonLayout1 = QVBoxLayout()
+		buttonLayout1.addWidget(nameLabel)
+		buttonLayout1.addWidget(self.nameLine)
+		buttonLayout1.addWidget(self.submitButton)
+
+		self.submitButton.clicked.connect(self.submitContact)
+
+		mainLayout = QGridLayout()
+		# mainLayout.addWidget(nameLabel, 0, 0)
+		mainLayout.addLayout(buttonLayout1, 0, 100)
+
+		self.setLayout(mainLayout)
+		self.setWindowTitle("Hello Qt")
+
+	def submitContact(self):
+		name = self.nameLine.text()
+
+		if name == "":
+			QMessageBox.information(self, "Empty Field",
+									"Please enter a name and address.")
+			return
+		else:
+			QMessageBox.information(self, "Success!",
+									"Hello %s!" % name)	
 		
 if __name__ == '__main__':
 	
