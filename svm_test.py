@@ -66,99 +66,100 @@ def accuracy_svm (data_set1 , data_set2 , cc , gg):
 	mean = accuracy.mean()
 	std = accuracy.std()
 	return (mean , std)			
-
-
+means = []
+sdeviations = []
+legends = []
+min_max = []
 #Get features in this part  should be an array of arrays or list of list with each small list containing features of one segment and many such lists
 # Assumed final list os lists is in entropies_train[[]]
 #For each list give in array fatigue =1 and not-fatigue=0
 #Do_same for test data
 
-mean_old = 0
-cc_max , gg_max = (0,0)
-for entropy in ["renyi"]:#,"tsallis","renyi","permut"]:	
-	for ccc in range (50,100):
-		for ggg in range (50,100):						#(6.1,8.4)
-			cc = ccc/10
-			gg = ggg/10 
-			print (cc,gg)
-			#print (cc,gg)
-			mean_accuracies = []
-			std_accuracies = []
-			#print (entropy)
-			accuracy = []
-			accuracy_std = []
-			for sub in range (1,31):
-				for turn in range (1,3):
-					data_set1 = []
-					data_set2 = []
-					for ch in range (1,25):
-							os.chdir ('/media/harsh/DATA/Readable_Data/Entropies')
-							file_name = entropy+"s"+str(sub)+"t"+str(turn)+"c"+str(ch)+".txt"
-							#print (file_name)
-							f = open (file_name , 'r')
-							n = 0
-							temp = []
-							a=0
-							for line in f:
-								for word in line.split() :
-									#a = a+1
-									#print (a)
-									#print (word)
-									temp.append(str(float(word)))
-							f.close()				
-							data1 = temp[0:300]
-							data2 = temp[len(temp)-300:len(temp)]
-							data_set1.append(data1)
-							data_set2.append(data2)
-					data_set1 = np.array(data_set1)
-					x , y = data_set1.shape
-					#print (x,y)
-					# if (y!=24):
-					# 	print ("error")
-					# 	print (y)
-					# 	print (x)
-					data_set1 = data_set1.reshape((y,x))
-					data_set2 = np.array(data_set2)
-					x , y = data_set2.shape
-					#print (x,y)
-					data_set2 = data_set2.reshape(y,x)
-					#print (len(data_set2[0]))
-					mean , std = accuracy_svm(data_set1 , data_set2 , cc , gg)
-					accuracy.append(mean)
-					accuracy_std.append(std)
-			accuracy = np.array(accuracy)		
-			accuracy_std = np.array(accuracy_std)		
-			mean = accuracy.mean()
-			if (mean > mean_old):
-					cc_max = cc
-					gg_max = gg
-					mean_old = mean
-					std = accuracy_std.mean()
-					print (mean,std,entropy)
-			
-			
+# mean_old = 0
+# cc_max , gg_max = (0,0)
+for entropy in ["shannon","tsallis","renyi","permut"]:#,"tsallis","renyi","permut"]:	
+	# for ccc in range (50,100):
+	# 	for ggg in range (50,100):						#(6.1,8.4)
+	cc = 9.8
+	gg = 9.9
+	print (cc,gg)
+	#print (cc,gg)
+	mean_accuracies = []
+	std_accuracies = []
+	#print (entropy)
+	accuracy = []
+	for sub in range (1,31):
+		for turn in range (1,3):
+			data_set1 = []
+			data_set2 = []
+			for ch in range (1,25):
+					os.chdir ('/media/harsh/DATA/Readable_Data/Entropies')
+					file_name = entropy+"s"+str(sub)+"t"+str(turn)+"c"+str(ch)+".txt"
+					#print (file_name)
+					f = open (file_name , 'r')
+					n = 0
+					temp = []
+					a=0
+					for line in f:
+						for word in line.split() :
+							#a = a+1
+							#print (a)
+							#print (word)
+							temp.append(str(float(word)))
+					f.close()				
+					data1 = temp[0:300]
+					data2 = temp[len(temp)-300:len(temp)]
+					data_set1.append(data1)
+					data_set2.append(data2)
+			data_set1 = np.array(data_set1)
+			x , y = data_set1.shape
+			#print (x,y)
+			# if (y!=24):
+			# 	print ("error")
+			# 	print (y)
+			# 	print (x)
+			data_set1 = data_set1.reshape((y,x))
+			data_set2 = np.array(data_set2)
+			x , y = data_set2.shape
+			#print (x,y)
+			data_set2 = data_set2.reshape(y,x)
+			#print (len(data_set2[0]))
+			mean , std = accuracy_svm(data_set1 , data_set2 , cc , gg)
+			accuracy.append(mean)
+			#accuracy_std.append(std)
+	accuracy = np.array(accuracy)		
+	accuracy_std = accuracy.std()		
+	mean = accuracy.mean()
+	minn , maxx = (accuracy.min() , accuracy.max())
+	# if (mean > mean_old):
+	# 		cc_max = cc
+	# 		gg_max = gg
+	# 		mean_old = mean
+	# 		print (mean,accuracy_std,entropy)
+	means.append(mean)
+	sdeviations.append(accuracy_std)
+	min_max.append(maxx-minn)	
+	# print (result)
+	# print (entropy + " done")		
 			# mean_accuracies.append(mean)
 			# std_accuracies.append(std)
 
-print ("Best result")
-print ("Parameters:")
-print (cc_max,gg_max)
-print ("result:")
-print (mean_old , entropy)
 
-# n = 4
-# b = 0.35
-# fig , ax = plt.subplots()
-# index = np.arange(n)
-# opacity = 0.5
-# error_config = {'ecolor':'0.0'}
-# rects1 = ax.bar (index, mean_accuracies, b, alpha=opacity, color='r', yerr=(0,0,0,0), error_kw=error_config,label='Mean accuracy')
-# rects2 = ax.bar (index+b, std_accuracies, b, alpha=opacity, color='b', yerr=(0,0,0,0), error_kw=error_config,label='Standard Deviation of accuracies')
-# ax.set_xlabel('Entropy')
-# ax.set_ylabel('Value')
-# ax.set_title('SVM Results')
-# ax.set_xticks(index )
-# ax.set_xticklabels(('Shannon','Tsallis','Renyi','Permutation'))
-# ax.legend()
-# fig.tight_layout()
-# plt.show()	
+
+#print (type(means[0]))
+n = 4
+b = 0.35
+fig , ax = plt.subplots()
+index = np.arange(n)
+opacity = 0.5
+error_config = {'ecolor':'0.0'}
+rects1 = ax.bar (index, means, b, alpha=opacity, color='r', yerr=sdeviations, error_kw=error_config,label='Mean accuracy')
+#rects2 = ax.bar (index+b, means, b, alpha=opacity, color='b', yerr=min_max, error_kw=error_config,label='Standard Deviation of accuracies')
+ax.set_xlabel('Entropy')
+ax.set_ylabel('Accuracy')
+ax.set_title('SVM Results')
+ax.set_xticks(index )
+ax.set_xticklabels(('Shannon','Tsallis','Renyi','Permutation'))
+ax.legend()
+fig.tight_layout()
+plt.show()	
