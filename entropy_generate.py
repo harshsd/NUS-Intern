@@ -12,11 +12,21 @@ w_in_s = 2
 del_in_s = 2
 L=5	#10             #10
 w=int(w_in_s*250)   #128			#256000
-delta=int(del_in_s*250) #8			#8000
+delta=int(del_in_s*250) #8			#8000				this is for Unfilterd Data
 q=3
 alpha = 0.5
 d = 3
 delay = 2
+
+# w_in_s = 10
+# del_in_s = 10
+# L=20	#10             #10
+# w=int(w_in_s*250)   #128			#256000						this is for Unfiltered)Data_1
+# delta=int(del_in_s*250) #8			#8000
+# q=0.8
+# alpha = 0.75
+# d = 2
+# delay = 1
 
 
 def sig_entropy ( L , w, delta, sig, entropy_name,q,alpha,d,delay):
@@ -131,56 +141,67 @@ def permutation_entropy(L,time_series, m, delay):
 
 
 if __name__ == '__main__':
+	#band_name = input("Enter band name: (alpha,beta,delta,theta,gamma)")
+	entropy_name = input("Enter Entropy Name: (s,t,r,p)")
+	for band_name in ["alpha","beta","delta","theta","gamma"]:
+		for sub in range (1,31):
+			for ch in range (1,25):
+				for turn in range (1,3):   
+					os.chdir('/media/harsh/DATA/Readable_Data/'+band_name)
+					file_name = band_name + 's'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'  #change_here
+					print (file_name)
+					f = open (file_name , 'r')
+					sig = []
+					j=1
+					for line in f:
 
-	for sub in range (1,31):
-		for ch in range (1,25):
-			for turn in range (1,3):   
-				os.chdir('/media/harsh/DATA/Readable_Data/Unfiltered_Data')
-				file_name = 's'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'  #change_here
-				print (file_name)
-				f = open (file_name , 'r')
-				sig = []
-				j=1
-				for line in f:
+						for word in line.split():	
+								
+							sig.append(float(word))
+					f.close()	
+					os.chdir('/media/harsh/DATA/Readable_Data/Entropies_filtered/'+band_name)
+					if (entropy_name == "s"):
 
-					for word in line.split():	
-							
-						sig.append(float(word))
-				f.close()		
-				sh_ent = sig_entropy(L,w,delta,sig,"shannon",q,alpha,d,delay)
-				print("shannon")
-				te_ent = sig_entropy(L,w,delta,sig,"tsallis",q,alpha,d,delay)
-				print("tsallis")
-				ren_ent= sig_entropy(L,w,delta,sig,"renyi",q,alpha,d,delay)
-				print("renyi")
-				per_ent= sig_entropy(L,w,delta,sig,"permutation",q,alpha,d,delay)
-				print("permutation")		
+						sh_ent = sig_entropy(L,w,delta,sig,"shannon",q,alpha,d,delay)
+						print("shannon")
+						file_name = 'shannons'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
+						file = open (file_name,'a+')
+						M = len(sh_ent)
+						for i in range (0,M):
+							file.write(str(sh_ent[i]))
+							file.write('\n')
+						file.close()		
 
-				M = len(per_ent)
+					elif (entropy_name == "t"):		
+						te_ent = sig_entropy(L,w,delta,sig,"tsallis",q,alpha,d,delay)
+						print("tsallis")
+						file_name = 'tsalliss'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
+						file = open (file_name,'a+')
+						M = len(te_ent)
+						for i in range (0,M):
+								file.write(str(te_ent[i]))
+								file.write('\n')
+						file.close()
 
+					elif (entropy_name == "r"):
+						
+						ren_ent= sig_entropy(L,w,delta,sig,"renyi",q,alpha,d,delay)
+						print("renyi")
+						file_name = 'renyis'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
+						file = open (file_name,'a+')
+						M = len (ren_ent)
+						for i in range (0,M):
+								file.write(str(ren_ent[i]))
+								file.write('\n')
+						file.close()
 
-				os.chdir('/media/harsh/DATA/Readable_Data/Entropies')
-				file_name = 'shannons'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
-				file = open (file_name,'a+')
-				for i in range (0,M):
-						file.write(str(sh_ent[i]))
-						file.write('\n')
-				file.close()		
-				file_name = 'tsalliss'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
-				file = open (file_name,'a+')
-				for i in range (0,M):
-						file.write(str(te_ent[i]))
-						file.write('\n')
-				file.close()		
-				file_name = 'renyis'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
-				file = open (file_name,'a+')
-				for i in range (0,M):
-						file.write(str(ren_ent[i]))
-						file.write('\n')
-				file.close()			
-				file_name = 'permuts'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
-				file = open (file_name,'a+')
-				for i in range (0,M):
-						file.write(str(per_ent[i]))
-						file.write('\n')														
-				file.close()		
+					elif (entropy_name == "p"):	
+						per_ent= sig_entropy(L,w,delta,sig,"permutation",q,alpha,d,delay)
+						print("permutation")		
+						M = len (per_ent)
+						file_name = 'permuts'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
+						file = open (file_name,'a+')
+						for i in range (0,M):
+							file.write(str(per_ent[i]))
+							file.write('\n')														
+						file.close()		

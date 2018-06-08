@@ -73,12 +73,18 @@ class Example(QWidget):
 		btn4.resize(btn4.sizeHint())
 		btn4.move(250, 100)  
 
-		# btn5 = QPushButton('Clean Plots', self)
-		# btn5.setToolTip('Push to clean')
-		# btn5.clicked.connect(self.on_click_clear)
-		# btn5.resize(btn5.sizeHint())
-		# btn5.move(450, 100)       
+		btn5 = QPushButton('Plot current EEG signal', self)
+		btn5.setToolTip('Push to plot')
+		btn5.clicked.connect(self.on_click_plot_signal)
+		btn5.resize(btn5.sizeHint())
+		btn5.move(50, 150)       
 		
+		# btn6 = QPushButton('Clear all graphs', self)
+		# btn6.setToolTip('Push to close')
+		# btn6.clicked.connect(self.on_click_close_all)
+		# btn6.resize(btn5.sizeHint())
+		# btn6.move(250, 150) 
+
 		# self.setGeometry(self.left, self.top, self.width, self.height)
 		# a=self.getInteger()
 		# #self.getText()
@@ -104,7 +110,7 @@ class Example(QWidget):
 
 	def getInteger(self,par_name,curr_val):
 		#print(self.w_in_s)
-		i, okPressed = QInputDialog.getInt(self, "Insert Integer",par_name,curr_val, 0, 100, 1)
+		i, okPressed = QInputDialog.getInt(self, "Insert Integer",par_name,curr_val, 0, 10000, 1)
 		if okPressed:
 			return i
 		else :
@@ -112,7 +118,7 @@ class Example(QWidget):
 			return curr_val    
  
 	def getDouble(self,par_name,curr_val):
-		d, okPressed = QInputDialog.getDouble(self, "Insert Double",par_name, curr_val, 0, 100, 10)
+		d, okPressed = QInputDialog.getDouble(self, "Insert Double",par_name, curr_val, 0, 10000, 10)
 		if okPressed:
 			return d
 		else :
@@ -176,6 +182,16 @@ class Example(QWidget):
 		p.start()
 		# plot(self.sig_ent)
 		print ("ready")
+
+	def on_click_plot_signal(self):
+		k = Process(target = plot, args = (self.sig,))
+		self.processes.append(k)
+		k.start()	
+
+	# def on_click_close_all(self):
+	# 	for i in range(0,len(self.processes)):
+	# 		self.processes[i].stop()
+
 					 
 
 
