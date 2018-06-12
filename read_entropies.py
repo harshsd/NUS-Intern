@@ -6,6 +6,15 @@ import matplotlib.pyplot as plt
 import scipy
 from operator import sub
 
+
+def array_reshape (array):
+		ret_arr = np.zeros((24,30,2))
+		for i in range (0,24):
+			for j in range (0,30):
+				for k in range (0,2):
+					ret_arr[i][j][k] = array[j][k][i]	
+		return ret_arr				
+
 band_names = ["alpha","beta","delta"]#["alpha","beta","gamma","delta","theta"]
 #Entropies read and stored here
 for band_name in band_names:
@@ -19,7 +28,7 @@ for band_name in band_names:
 	#Change Dirctory Here
 	os.chdir ("/media/harsh/DATA/Readable_Data/Entropies_new_filtered/"+band_name) 
 	for sub in range (1,31):
-		print (sub)
+		#print (sub)
 		for turn in range (1,3):
 			for ch in range (1,25):
 				for ent in entropy_names:
@@ -36,6 +45,8 @@ for band_name in band_names:
 					line = np.polyfit ( x, entropy , 1 , full=True)
 
 					if ent == "shannon":
+						if (shannon[sub-1][turn-1][ch-1]!=0):
+							print ("error")
 						shannon[sub-1][turn-1][ch-1] = line[0][0]
 					elif ent == "tsallis":
 						tsallis[sub-1][turn-1][ch-1] = line[0][0]
@@ -70,21 +81,24 @@ for band_name in band_names:
 			
 
 	permut = np.array(permut)
-	permut = permut.reshape((24,30,2))
+	permut = array_reshape(permut)
 	renyi = np.array(renyi)
-	renyi = renyi.reshape((24,30,2))
+	renyi = array_reshape(renyi)
 	tsallis = np.array(tsallis)
-	tsallis = tsallis.reshape((24,30,2))
+	tsallis = array_reshape(tsallis)
 	shannon = np.array(shannon)
-	shannon = shannon.reshape((24,30,2))
+	shannon = array_reshape(shannon)
 
-	permut_mean = []
+	permut_mean = []	
 	shannon_mean = []
 	renyi_mean = []
 	tsallis_mean = []
 	rstd  = []
 	tstd = []
 	sstd = []
+	pstd = []
+
+	#print (len (permut[0]))
 
 	for ch in range(1,25):
 		permut_mean.append(abs(np.mean(permut[ch-1])))
@@ -94,22 +108,24 @@ for band_name in band_names:
 		rstd.append(np.std(renyi[ch-1]))
 		tstd.append(np.std(tsallis[ch-1]))
 		sstd.append(np.std(shannon[ch-1]))
+		pstd.append(np.std(permut[ch-1]))
 
 	f = [a-b for a,b in zip(renyi_mean,rstd)]
 	# print (np.mean(slopes))
 	# print (np.std(slopes))
 	# Plot means with channels
-	plt.figure()
-	# plt.plot(shannon_mean)
+	# plt.figure(num = band_name)
+	# # plt.plot(shannon_mean)
 	# plt.plot(tsallis_mean)
-	plt.plot(renyi_mean)
-
-	# plt.plot(permut_mean)
-	# plt.plot(sstd)
+	# plt.plot(renyi_mean)
+	# # plt.plot(permut_mean)
+	# # plt.plot(permut_mean)
+	# # plt.plot(sstd)
 	# plt.plot(tstd)
-	plt.plot(rstd)
-	legend1 = ["renyi_mean_" + band_name , "rstd"]
-	plt.legend(legend1)
+	# plt.plot(rstd)
+	# # plt.plot(pstd)
+	# legend1 = ["t","r","td","rd"]
+	# plt.legend(legend1)
 	# plt.plot(slopes)
 	#legend = ["shannon "+band_name,"tsallis","renyi","sstd","tstd","rstd"]
 	#plt.figure()
@@ -125,9 +141,26 @@ for band_name in band_names:
 	rects2 = ax.bar (index+b, rstd, b, alpha=opacity, color='b' , error_kw=error_config,label='Standard Deviation')
 	ax.set_xlabel('Channel')
 	ax.set_ylabel('Slope')
-	ax.set_title('Tracking task results for ' + band_name)
+	ax.set_title('Tracking task results for ' + band_name + " renyi")
 	ax.set_xticks(index )
 	ax.set_xticklabels(np.arange(1,25,1))
 	ax.legend()
 	fig.tight_layout()
+
+	n = 24
+	b = 0.15
+	fig , ax = plt.subplots()
+	index = np.arange(n)
+	opacity = 0.5
+	error_config = {'ecolor':'0.0'}
+	rects1 = ax.bar (index, tsallis_mean, b, alpha=opacity, color='r' , error_kw=error_config,label='Mean')
+	rects2 = ax.bar (index+b, tstd, b, alpha=opacity, color='b' , error_kw=error_config,label='Standard Deviation')
+	ax.set_xlabel('Channel')
+	ax.set_ylabel('Slope')
+	ax.set_title('Tracking task results for ' + band_name + " tsallis")
+	ax.set_xticks(index )
+	ax.set_xticklabels(np.arange(1,25,1))
+	ax.legend()
+	fig.tight_layout()
+
 plt.show()
