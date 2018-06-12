@@ -143,7 +143,7 @@ def permutation_entropy(L,time_series, m, delay):
 if __name__ == '__main__':
 	#band_name = input("Enter band name: (alpha,beta,delta,theta,gamma)")
 	entropy_name = input("Enter Entropy Name: (s,t,r,p)")
-	for band_name in ["alpha","beta","delta","theta","gamma"]:
+	for band_name in ["theta"]:#"alpha","beta","delta","theta",
 		for sub in range (1,31):
 			for ch in range (1,25):
 				for turn in range (1,3):   

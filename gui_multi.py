@@ -33,12 +33,15 @@ class Example(QWidget):
 		self.delay = 2
 		self.file_name = "Shit"
 		self.sig = []
+		self.sig_orig = []
 		self.entropy = "shannon"
 		self.w = int(self.w_in_s*250)
 		self.delta = int(self.del_in_s*250)
 		self.initUI()
 		self.processes = []
 		self.sig_ent = []
+		self.start_point = 0
+		self.stop_point = 0
 		#self.a = self.plot()
 		#self.pool = multiprocessing.Pool()
 		
@@ -79,11 +82,11 @@ class Example(QWidget):
 		btn5.resize(btn5.sizeHint())
 		btn5.move(50, 150)       
 		
-		# btn6 = QPushButton('Clear all graphs', self)
-		# btn6.setToolTip('Push to close')
-		# btn6.clicked.connect(self.on_click_close_all)
-		# btn6.resize(btn5.sizeHint())
-		# btn6.move(250, 150) 
+		btn6 = QPushButton('Select sub-part', self)
+		btn6.setToolTip('Push to select part of the signal')
+		btn6.clicked.connect(self.on_click_sub_part)
+		btn6.resize(btn6.sizeHint())
+		btn6.move(250, 150) 
 
 		# self.setGeometry(self.left, self.top, self.width, self.height)
 		# a=self.getInteger()
@@ -169,6 +172,8 @@ class Example(QWidget):
 		self.file_name = fileName    
 		self.sig = Read_File(self.file_name)  
 		print (len(self.sig))
+		self.stop_point = len(self.sig)//250
+		self.sig_orig = self.sig
 
 	def on_click_run(self):
 		#self.a.close()
@@ -188,9 +193,11 @@ class Example(QWidget):
 		self.processes.append(k)
 		k.start()	
 
-	# def on_click_close_all(self):
-	# 	for i in range(0,len(self.processes)):
-	# 		self.processes[i].stop()
+	def on_click_sub_part(self):
+		self.start_point = int(250*self.getDouble("Enter start time in seconds ("+str(len(self.sig_orig)//250)+" )" , self.start_point//250))
+		self.stop_point = int(250*self.getDouble("Enter stop time in seconds ("+str(len(self.sig_orig)//250)+" )" , self.stop_point//250))
+		self.sig = self.sig_orig[self.start_point:self.stop_point+1]
+		print (len(self.sig))
 
 					 
 
