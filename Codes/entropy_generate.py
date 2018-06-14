@@ -10,11 +10,11 @@ import math
 
 w_in_s = 2
 del_in_s = 2
-L=5	#10             #10
+L=10
 w=int(w_in_s*250)   #128			#256000
 delta=int(del_in_s*250) #8			#8000				this is for Unfilterd Data
-q=3
-alpha = 0.5
+q=2
+alpha = 0.3
 d = 3
 delay = 2
 
@@ -28,6 +28,14 @@ delay = 2
 # d = 2
 # delay = 1
 
+def read_file(file_name):
+	f = open(file_name , 'r')
+	vec = []
+	for line in f:
+		for word in line.split():
+			vec.append(float(word))
+	f.close()
+	return vec
 
 def sig_entropy ( L , w, delta, sig, entropy_name,q,alpha,d,delay):
 	#entropy_name = shannon/tsallis/renyi/permutation
@@ -143,30 +151,26 @@ def permutation_entropy(L,time_series, m, delay):
 if __name__ == '__main__':
 	#band_name = input("Enter band name: (alpha,beta,delta,theta,gamma)")
 	entropy_name = input("Enter Entropy Name: (s,t,r,p)")
-	for band_name in ["theta"]:#"alpha","beta","delta","theta",
-		for sub in range (1,31):
+	#for band_name in ["theta"]:#"alpha","beta","delta","theta",
+	for sub in range (1,31):
 			for ch in range (1,25):
 				for turn in range (1,3):   
-					os.chdir('/media/harsh/DATA/Readable_Data/'+band_name)
-					file_name = band_name + 's'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'  #change_here
+					os.chdir('G:/Harsh_Data_Backup/Readable_Data/Unfiltered_Data')
+					file_name = 's'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'  #change_here
 					print (file_name)
-					f = open (file_name , 'r')
-					sig = []
-					j=1
-					for line in f:
-
-						for word in line.split():	
-								
-							sig.append(float(word))
-					f.close()	
-					os.chdir('/media/harsh/DATA/Readable_Data/Entropies_filtered/'+band_name)
+					sig = read_file(file_name)
+					os.chdir('G:/Harsh_Data_Backup/Readable_Data/Entropies_2_S')
 					if (entropy_name == "s"):
-
 						sh_ent = sig_entropy(L,w,delta,sig,"shannon",q,alpha,d,delay)
+						print (w)
+						print (delta)
+						print (len(sig))
+						print (float((len(sig)-w)/delta))
 						print("shannon")
 						file_name = 'shannons'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
 						file = open (file_name,'a+')
 						M = len(sh_ent)
+						print (M)
 						for i in range (0,M):
 							file.write(str(sh_ent[i]))
 							file.write('\n')
