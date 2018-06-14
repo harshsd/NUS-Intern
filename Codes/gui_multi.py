@@ -166,7 +166,7 @@ class Example(QWidget):
 	def on_click_read(self):    
 		options = QFileDialog.Options()
 		options |= QFileDialog.DontUseNativeDialog
-		fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "F:/Harsh_Data_Backup/Readable_Data","All Files (*);;Python Files (*.py)", options=options)
+		fileName, _ = QFileDialog.getOpenFileName(self,"QFileDialog.getOpenFileName()", "G:/Harsh_Data_Backup/Readable_Data","All Files (*);;Python Files (*.py)", options=options)
 		if fileName:
 			print(fileName)
 		self.file_name = fileName    
