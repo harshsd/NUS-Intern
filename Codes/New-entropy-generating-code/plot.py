@@ -17,9 +17,9 @@ total_slopes = []
 means = []
 stds = []
 ch_specific=[]
-for sub in range (1,8):
+for sub in range (1,2):
 	subject_slope = []
-	for ch in range (1,63):
+	for ch in range (1,2):
 		sig = read_file(entropy+"s"+str(sub)+"c"+str(ch)+".txt")
 		if len(sig) != 540:
 			print ("error")
@@ -34,6 +34,20 @@ for sub in range (1,8):
 			slope2 = line2[0][0]
 			line3 = np.polyfit(x,sig3,1,full=True)
 			slope3 = line3[0][0]
+			if ch==1:
+			 plt.figure()
+			 plt.plot(x,sig1)
+			 y = slope1*x + line1[0][1]
+			 plt.plot(x,y)
+			 plt.figure()
+			 plt.plot(x,sig2)
+			 y = slope2*x + line2[0][1]
+			 plt.plot(x,y)
+			 plt.figure()
+			 plt.plot(x,sig3)
+			 y = slope3*x + line3[0][1]
+			 plt.plot(x,y)
+			 plt.show()
 			if(ch==15):
 				ch_specific.append(slope1)
 				ch_specific.append(slope2)
@@ -49,19 +63,19 @@ for sub in range (1,8):
 total_slopes = np.array(total_slopes)
 print (total_slopes.shape)			
 final_slopes = np.zeros((62,21))
-for subject in range (0,7):
-	for ch in range(0,62):
-		final_slopes[ch][3*subject]=total_slopes[subject][ch][0]
-		final_slopes[ch][3*subject+1]=total_slopes[subject][ch][1]
-		final_slopes[ch][3*subject+2]=total_slopes[subject][ch][2]
-for ch in range (0,62):
-	slopes = final_slopes[ch]
-	mean = abs(slopes.mean())
-	std = slopes.std()
-	means.append(mean)
-	stds.append(std)
-plt.plot(means)
-plt.plot(stds)	
-plt.figure()
-plt.plot(ch_specific)					
-plt.show()
+# for subject in range (0,7):
+# 	for ch in range(0,62):
+# 		final_slopes[ch][3*subject]=total_slopes[subject][ch][0]
+# 		final_slopes[ch][3*subject+1]=total_slopes[subject][ch][1]
+# 		final_slopes[ch][3*subject+2]=total_slopes[subject][ch][2]
+# for ch in range (0,62):
+# 	slopes = final_slopes[ch]
+# 	mean = abs(slopes.mean())
+# 	std = slopes.std()
+# 	means.append(mean)
+# 	stds.append(std)
+# plt.plot(means)
+# plt.plot(stds)	
+# plt.figure()
+# plt.plot(ch_specific)					
+# plt.show()
