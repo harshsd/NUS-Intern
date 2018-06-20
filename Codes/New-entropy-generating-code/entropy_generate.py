@@ -44,18 +44,11 @@ def sig_entropy ( L , w, delta, sig, entropy_name,q,alpha,d,delay):
 	K = len(sig)
 	M = ((K-w)//delta) + 1  # Should be an int
 	M = int(M)
-	# print (M)
-	#print (maxp,minp)
 	for m in range (0,M):
-		# print (w+m*delta)
-		# print (K)
 		partition = []
 		for index in range (m*delta,w+(m*delta)):
 			partition.append(sig[index])
-		# print (len(partition))
 		entropy.append(partition_entropy(partition,L,q,entropy_name,alpha,d,delay))
-		#print(m/M)
-		# print(entropy_name)
 	return entropy
 
 def partition_entropy( partition,L,q,entropy_name,alpha,d,delay):

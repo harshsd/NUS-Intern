@@ -119,7 +119,7 @@ for just_for_fun in ["to avoid editing"]:
 					data_set3 = []
 					for ch in range (1,63):
 							os.chdir ('G:/Harsh_Data_Backup/Data/New_Entropies_Data')
-							file_name = entropy+"s"+"c"+str(ch)+".txt"
+							file_name = entropy+"s"+str(sub)+"c"+str(ch)+".txt"
 							print (file_name)
 							temp = read_file(file_name)				
 							data1 = temp[0:60]
