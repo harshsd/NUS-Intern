@@ -157,8 +157,8 @@ if __name__ == '__main__':
 	#band_name = input("Enter band name: (alpha,beta,delta,theta,gamma)")
 	entropy_name = input("Enter Entropy Name: (s,t,r,p)")
 	#for band_name in ["theta"]:#"alpha","beta","delta","theta",
-	for sub in range (1,7):
-			for ch in range (1,62): 
+	for sub in range (1,8):
+			for ch in range (1,63): 
 					os.chdir('G:/Harsh_Data_Backup/Data/New_Data')
 					file_name = 's'+str(sub)+'c'+str(ch)+'.txt'  #change_here
 					print (file_name)
