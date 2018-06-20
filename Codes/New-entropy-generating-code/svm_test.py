@@ -37,24 +37,28 @@ def accuracy_svm (data_set1 , data_set2 , data_set3 , cc , gg):
 		fatigue_test3 = []	
 		test1 = data_set1[int(i*l/5):int((i+1)*l/5)]
 		test2 = data_set2[int(i*l/5):int((i+1)*l/5)]
-		test3 = data_set3[int(i*l/5):int(i+1)*l/5]
+		test3 = data_set3[int(i*l/5):int((i+1)*l/5)]
 		if i == 0:
 			train1 = data_set1[int(l/5):l]
 			train2 = data_set2[l//5:l]
-			train3 = data_set3[l//5:1]
+			train3 = data_set3[l//5:l]
 		elif i == 4 :
 			train1 = data_set1[0:4*l//5]
 			train2 = data_set2[0:4*l//5]	
-			train3 = data_set2[0:4*l//5]
+			train3 = data_set3[0:4*l//5]
 		else:
 			train1 = data_set1[0:i*l//5]
 			train1 = np.concatenate((train1,data_set1[(i+1)*l//5:l]),axis = 0)
 			train2 = data_set2[0:i*l//5]
 			train2 = np.concatenate((train2 ,data_set2[(i+1)*l//5:l]) , axis =0)
-			train3 = data_set2[0:i*l//5]
-			train3 = np.concatenate((train2 ,data_set2[(i+1)*l//5:l]) , axis =0)			
+			train3 = data_set3[0:i*l//5]
+			train3 = np.concatenate((train3 ,data_set3[(i+1)*l//5:l]) , axis =0)			
 		test_final = np.concatenate((test1,test2,test3),axis=0)
 		train_final = np.concatenate((train1,train2,train3), axis=0)
+		# print (len(train1))
+		# print (len(train2))
+		# print (len(train3))
+		# print (len(train_final))
 		for k in range (0,int(4*l//5)):
 			fatigue_train1.append(0)
 			fatigue_train2.append(1)
@@ -69,8 +73,11 @@ def accuracy_svm (data_set1 , data_set2 , data_set3 , cc , gg):
 		fatigue_test1 += fatigue_test2
 		fatigue_test1 += fatigue_test3 		
 		fatigue_test = np.array(fatigue_test1)
-		clf = svm.SVC(kernel='rbf', C=cc, gamma = gg )				
-		clf.fit (train_final , fatigue_train1)
+		# print(l)
+		# print (np.array(train_final).shape)
+		# print(fatigue_train.shape)
+		clf = svm.SVC(kernel='rbf', C=cc, gamma = gg ,decision_function_shape='ovo')				
+		clf.fit (train_final , fatigue_train)
 		fatigue_result = clf.predict(test_final)
 		y = 0
 		n = 0
@@ -108,8 +115,8 @@ entropy = input ("Enter entropy name: ")
 #for entropy in ["shannon","tsallis","renyi" , "permut"]:
 for just_for_fun in ["to avoid editing"]:
 	print(entropy)							
-	for cc in range(50,100):
-		for gg in range (50,100):
+	for cc in range(1,100):
+		for gg in range (1,100):
 			mean_accuracies = []
 			std_accuracies = []
 			accuracy = []
@@ -120,7 +127,7 @@ for just_for_fun in ["to avoid editing"]:
 					for ch in range (1,63):
 							os.chdir ('G:/Harsh_Data_Backup/Data/New_Entropies_Data')
 							file_name = entropy+"s"+str(sub)+"c"+str(ch)+".txt"
-							print (file_name)
+							#print (file_name)
 							temp = read_file(file_name)				
 							data1 = temp[0:60]
 							data1 += temp[180:240]
