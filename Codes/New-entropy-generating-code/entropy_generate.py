@@ -9,14 +9,14 @@ import math
 
 
 w_in_s = 2
-del_in_s = 2
+del_in_s = 0.5
 L=10
 w=int(w_in_s*256)   #128			#256000
-delta=int(del_in_s*256) #8			#8000				this is for Unfilterd Data
+delta=int(del_in_s*256) #8			#8000				this is for Unfiltered Data
 q=2
-alpha = 0.3
-d = 3
-delay = 2
+alpha = 0.6
+d = 2
+delay = 1
 
 # w_in_s = 10
 # del_in_s = 10
@@ -156,7 +156,7 @@ if __name__ == '__main__':
 					file_name = 's'+str(sub)+'c'+str(ch)+'.txt'  #change_here
 					print (file_name)
 					sig = read_file(file_name)
-					os.chdir('G:/Harsh_Data_Backup/Data/New_Entropies_Data')
+					os.chdir('G:/Harsh_Data_Backup/Data/New_Entropies_Data_with_delta_as_half')
 					if (entropy_name == "s"):
 						sh_ent = sig_entropy(L,w,delta,sig,"shannon",q,alpha,d,delay)
 						#print (w)
