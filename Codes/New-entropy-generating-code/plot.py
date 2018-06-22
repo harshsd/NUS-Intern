@@ -4,11 +4,24 @@ import numpy as np
 import time
 
 
+def rolling_mean (a,n):
+	a = np.array(a)
+	l = len(a)
+	rolling_mean = []
+	for start in range (0,l-n+1):
+		part_sum = 0
+		for k in range (0,n):
+			part_sum += a[start+k]
+		rolling_mean.append(part_sum/n)
+	return np.array(rolling_mean)		
+
+
+
 def sorted_array_with_indices(b):
 	a = b
 	l = len(a)
 	x = np.arange(l)
-	x = x+1
+	x = x
 	for i1 in range (0,l-1):
 		#print (i1)
 		for i2 in range (0,l-1-i1):
@@ -47,12 +60,13 @@ def read_file(file_name):
 
 
 
-entropy = input("Enter entropy to plot: ")
+#entropy = input("Enter entropy to plot: ")
+entropy = "permut"
 total_slopes = []
 means = []
 stds = []
 ch_specific=[]
-
+channel_counter = np.zeros((62))
 for sub in range (1,8):
 	os.chdir("G:/Harsh_Data_Backup/Data/New_Entropies_Data")
 	subject_slope = []
@@ -94,10 +108,61 @@ for sub in range (1,8):
 	trial1 , trialx1 = sorted_array_with_indices(trial[0])
 	trial2 , trialx2 = sorted_array_with_indices(trial[1])
 	trial3 , trialx3 = sorted_array_with_indices(trial[2])
-	print ("Subject "+str(sub)+":")
-	print (trialx1)
-	print (trialx2)
-	print (trialx3)
+	# print ("Subject "+str(sub)+":")
+	# print (trialx1)
+	# print (trialx2)
+	# print (trialx3)
+	final_sig1 = np.zeros(180)
+	final_sig2 = np.zeros(180)
+	final_sig3 = np.zeros(180)
+	no_of_significant_channels = 10
+	significant_weights1 = []
+	significant_weights2 = []
+	significant_weights3 = []	
+	for chc in range(0,no_of_significant_channels):
+		significant_weights1.append(trial[0][chc])
+		significant_weights2.append(trial[1][chc])
+		significant_weights3.append(trial[2][chc])
+		channel_counter[trialx1[chc]] += 1
+		channel_counter[trialx2[chc]] += 1
+		channel_counter[trialx3[chc]] += 1
+	significant_weights1 = np.array(significant_weights1)
+	significant_weights3 = np.array(significant_weights3)
+	significant_weights2 = np.array(significant_weights2)	
+
+	significant_weights1 = significant_weights1/np.sum(significant_weights1)
+	significant_weights2 = significant_weights2/np.sum(significant_weights2)
+	significant_weights3 = significant_weights3/np.sum(significant_weights3)
+
+	for chc in range(0,no_of_significant_channels):
+		for jkj in range(1,180):
+			final_sig1[jkj] = final_sig1[jkj] + significant_weights1[chc]*total_sig1[trialx1[chc]][jkj]
+			final_sig2[jkj] = final_sig2[jkj] + significant_weights2[chc]*total_sig2[trialx2[chc]][jkj]
+			final_sig3[jkj] = final_sig3[jkj] + significant_weights3[chc]*total_sig3[trialx3[chc]][jkj]	
+	mov_avg_n = 150
+	os.chdir("G:/Harsh_Data_Backup/Data/Results_photos_with_limited_channels/"+entropy)
+	# plt.figure("sub "+str(sub)+"trial 1")
+	# plt.plot(final_sig1[1:179])
+	plt.figure("sub "+str(sub)+"trial 1 rolling mean")
+	plt.plot(rolling_mean(final_sig1[1:179],mov_avg_n))
+	plt.savefig("sub "+str(sub)+"trial 1.png")
+	# plt.figure("sub "+str(sub)+"trial 2")
+	# plt.plot(final_sig2[1:179])
+	plt.figure("sub "+str(sub)+"trial 2 rolling mean")
+	plt.plot(rolling_mean(final_sig2[1:179],mov_avg_n))
+	plt.savefig("sub "+str(sub)+"trial 2.png")	
+	# plt.figure("sub "+str(sub)+"trial 3")
+	# plt.plot(final_sig3[1:179])
+	plt.figure("sub "+str(sub)+"trial 3 rolling mean")
+	plt.plot(rolling_mean(final_sig3[1:179],mov_avg_n))
+	plt.savefig("sub "+str(sub)+"trial 3.png")	
+	plt.show()
+
+print (channel_counter)
+print (np.sum(channel_counter))
+
+
+
 	#print (slope_weights[0])
 	# for kkk in range (0,2):
 	# 	slope_weights[kkk] = slope_weights[kkk]/np.sum(slope_weights[kkk])
