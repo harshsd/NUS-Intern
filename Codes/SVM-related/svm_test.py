@@ -82,8 +82,8 @@ entropy = input ("Enter entropy name: ")
 #for entropy in ["shannon","tsallis","renyi" , "permut"]:
 for just_for_fun in ["to avoid editing"]:
 	print(entropy)							#(6.1,8.4)
-	for cc in range(50,100):
-		for gg in range (50,100):
+	for cc in range(1,100):
+		for gg in range (1,100):
 	#print (cc,gg)
 	#print (cc,gg)
 			mean_accuracies = []
@@ -142,7 +142,9 @@ for just_for_fun in ["to avoid editing"]:
 				cc_max = cc
 				gg_max = gg
 				mean_old = mean
-				print (cc_max,gg_max,mean,accuracy_std,entropy)
+				#print (cc_max,gg_max,mean,accuracy_std,entropy)
+			print (cc,gg)
+			print (cc_max,gg_max,mean,accuracy,entropy)	
 			means.append(mean)
 			sdeviations.append(accuracy_std)
 			min_max.append(maxx-minn)	
