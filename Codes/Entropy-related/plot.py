@@ -10,75 +10,115 @@ import itertools
 from matplotlib.ticker import MaxNLocator
 from collections import namedtuple
 
-Entropy = "Beta"
-entropy = "beta"
+def rolling_mean (a,n):
+    a = np.array(a)
+    l = len(a)
+    rolling_mean = []
+    for start in range (0,l-n+1):
+        part_sum = 0
+        for k in range (0,n):
+            part_sum += a[start+k]
+        rolling_mean.append(part_sum/n)
+    return np.array(rolling_mean)       
 
-os.chdir('/media/harsh/DATA/Readable_Data/Results_Filtered/'+Entropy)
-#print ('/media/harsh/DATA/Readable_Data/Results_Filtered/'+Entropy)
 
-s_slopes = []
-t_slopes = []
-r_slopes = []
-p_slopes = []
+def sorted_array_with_indices(b):
+    a = b
+    l = len(a)
+    x = np.arange(l)
+    x = x
+    for i1 in range (0,l-1):
+        #print (i1)
+        for i2 in range (0,l-1-i1):
+            #print(i2)
+            if a[i2]>a[i2+1]:
+                #print ("exchanged")
+                temp = a[i2]
+                a[i2]=a[i2+1]
+                a[i2+1]=temp
+                temp = x[i2]
+                x[i2]=x[i2+1]
+                x[i2+1]=temp        
+    return (a,x)            
 
-f = open (entropy+'_shannon_slopes_var.txt','r')
-for line in f:
-    for word in line.split():
-        s_slopes.append(float(word))
-f.close()
 
-f = open (entropy+'_tsallis_slopes_var.txt','r')
-for line in f:
-    for word in line.split():
-        t_slopes.append(float(word))
-f.close()
+def read_file(file_name):
+    f = open(file_name , 'r')
+    vec = []
+    for line in f:
+        for word in line.split():
+            vec.append(float(word))
+    f.close()
+    return vec
 
-f = open (entropy+'_renyi_slopes_var.txt','r')
-for line in f:
-    for word in line.split():
-    	try:
-    		#r_slopes.append(float(line.split()[0].split('[')[1].split(',')[0]))
-    		r_slopes.append(float(word))
-    	except:
-    		pass
-f.close()
 
-f = open (entropy+'_permutation_slopes_var.txt','r')
-for line in f:
-    for word in line.split():
-        p_slopes.append(float(word))
-f.close()
-
+sum_of_slopes = 0
+sum_of_good_slopes = 0
+positive = 0
+negative = 0
+entropy = "renyi"
+total_slopes = []
 means = []
-means.append(abs(np.average(s_slopes)))
-means.append(abs(np.average(t_slopes)))
-means.append(abs(np.average(r_slopes)))
-means.append(abs(np.average(p_slopes)))
+stds = []
+ch_specific=[]
+channel_counter = np.zeros((24))   
+var_final = [] 
+for sub in range (1,31):
+    for turn in range (1,3):
+        print ("sub , turn :"+str((sub,turn)))
+        total_sig = []
+        os.chdir("G:/Harsh_Data_Backup/Readable_Data/Entropies_2_S")
+        turn_slope=[]
+        slope_weights = np.zeros((24))
+        for ch in range (1,25):
+            sig = read_file(entropy+"s"+str(sub)+"t"+str(turn)+"c"+str(ch)+".txt")
+            x = np.arange(len(sig))
+            line = np.polyfit(x,sig,1,full=True)
+            slope = line[0][0]
+            slope_weights[ch-1] = (slope)
+            total_sig.append(sig)
+        copy_weights = np.copy(slope_weights)
+        sweights , xsweights = sorted_array_with_indices(copy_weights)
+        final_sig = np.zeros(len(sig))
+        no_of_significant_channels = 10
+        significant_weights = []
+        for chc in range (0,no_of_significant_channels):
+            significant_weights.append(sweights[chc])
+            channel_counter[xsweights[chc]] += 1
+        significant_weights = np.array(significant_weights)
+        significant_weights = significant_weights/np.sum(significant_weights)
 
-std = []
-std.append(np.std(s_slopes))
-std.append(np.std(t_slopes))
-std.append(np.std(r_slopes))
-std.append(np.std(p_slopes))
-
-print (means)
-print (std)
-
-
-
-n = 4
-b = 0.35
-fig , ax = plt.subplots()
-index = np.arange(n)
-opacity = 0.5
-error_config = {'ecolor':'0.0'}
-rects1 = ax.bar (index, means, b, alpha=opacity, color='r', yerr=(0,0,0,0), error_kw=error_config,label='Mean slope')
-rects1 = ax.bar (index+b, std, b, alpha=opacity, color='b', yerr=(0,0,0,0), error_kw=error_config,label='Standard Deviation')
-ax.set_xlabel('Entropy')
-ax.set_ylabel('Value')
-ax.set_title('Mean slopes')
-ax.set_xticks(index )
-ax.set_xticklabels(('Shannon','Tsallis','Renyi','Permutation'))
-ax.legend()
-fig.tight_layout()
-plt.show()
+        for chc in range (0,no_of_significant_channels):
+            for j in range (0,len(sig)):
+                final_sig[j] = final_sig[j] + significant_weights[chc]*total_sig[xsweights[chc]][j]
+        mov_avg_n = 1000
+        rolling_sig = rolling_mean(final_sig,mov_avg_n)
+        xfinal = np.arange(len(rolling_sig))       
+        final_line = np.polyfit(xfinal,rolling_sig,1,full=True)        
+        yfinal = (xfinal*final_line[0][0]) + final_line[0][1]
+        var = 0
+        for k in range (0,len(rolling_sig)):
+            var = var + abs(rolling_sig[k]-yfinal[k])
+        os.chdir("G:/Harsh_Data_Backup/Readable_Data/PICTURES")
+        plt.figure("sub "+str(sub)+"turn"+str(turn)+" rolling mean")
+        plt.plot(xfinal,rolling_sig)
+        plt.plot(xfinal,yfinal)
+        print(final_line[0][0])
+        sum_of_slopes += (final_line[0][0])
+        if(final_line[0][0]>0):
+            positive += 1
+        else :
+            sum_of_good_slopes += final_line[0][0]
+            negative += 1    
+        plt.savefig("sub "+str(sub)+"turn"+str(turn)+" rolling mean.png")
+        var_final.append(var)
+plt.figure()
+plt.bar(np.arange(len(var_final))/2,var_final)
+plt.savefig("variance.jpg")
+print (channel_counter)
+print (np.sum(channel_counter))
+print ("Average slope is: "+str(sum_of_slopes/60))
+print ("Average of good slopes is : "+str(sum_of_good_slopes/negative))
+print ("positive is : "+str(positive) + " and negative is : "+str(negative))        
+# plt.figure("Channel Info")        
+# plt.plot(np.arange(len(channel_counter)),channel_counter)

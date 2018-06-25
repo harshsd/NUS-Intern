@@ -93,9 +93,9 @@ for sub in range (1,8):
 			slope2 = line2[0][0]
 			line3 = np.polyfit(x,sig3,1,full=True)
 			slope3 = line3[0][0]
-			slope_weights[0][ch-1]=abs(slope1)
-			slope_weights[1][ch-1]=abs(slope2)
-			slope_weights[2][ch-1]=abs(slope3)
+			slope_weights[0][ch-1]=(slope1)
+			slope_weights[1][ch-1]=(slope2)
+			slope_weights[2][ch-1]=(slope3)
 			
 			slope = np.array([slope1,slope2,slope3])
 
@@ -115,14 +115,14 @@ for sub in range (1,8):
 	final_sig1 = np.zeros(180)
 	final_sig2 = np.zeros(180)
 	final_sig3 = np.zeros(180)
-	no_of_significant_channels = 10
+	no_of_significant_channels = 5
 	significant_weights1 = []
 	significant_weights2 = []
 	significant_weights3 = []	
 	for chc in range(0,no_of_significant_channels):
-		significant_weights1.append(trial[0][chc])
-		significant_weights2.append(trial[1][chc])
-		significant_weights3.append(trial[2][chc])
+		significant_weights1.append(trial1[chc])
+		significant_weights2.append(trial2[chc])
+		significant_weights3.append(trial3[chc])
 		channel_counter[trialx1[chc]] += 1
 		channel_counter[trialx2[chc]] += 1
 		channel_counter[trialx3[chc]] += 1
@@ -139,27 +139,56 @@ for sub in range (1,8):
 			final_sig1[jkj] = final_sig1[jkj] + significant_weights1[chc]*total_sig1[trialx1[chc]][jkj]
 			final_sig2[jkj] = final_sig2[jkj] + significant_weights2[chc]*total_sig2[trialx2[chc]][jkj]
 			final_sig3[jkj] = final_sig3[jkj] + significant_weights3[chc]*total_sig3[trialx3[chc]][jkj]	
-	mov_avg_n = 150
+	mov_avg_n = 15
+	rolling_sig_1 = rolling_mean(final_sig1[1:179],mov_avg_n)
+	rolling_sig_2 = rolling_mean(final_sig2[1:179],mov_avg_n)
+	rolling_sig_3 = rolling_mean(final_sig3[1:179],mov_avg_n)
+	av1 = []
+	av2 = []
+	av3 = []
+	l = len(rolling_sig_1)
+	# print (l)
+	# print (len(np.split(rolling_sig_1,int(l/3))))
+	for o in range (0,int(l/3)):
+		av1.append(np.mean(rolling_sig_1[0:int(l/3)]))
+		av2.append(np.mean(rolling_sig_2[0:int(l/3)]))
+		av3.append(np.mean(rolling_sig_3[0:int(l/3)]))
+
+	for o in range (int(l/3),int(2*l/3)):
+		av1.append(np.mean(rolling_sig_1[int(l/3):int(2*l/3)]))
+		av2.append(np.mean(rolling_sig_2[int(l/3):int(2*l/3)]))
+		av3.append(np.mean(rolling_sig_3[int(l/3):int(2*l/3)]))
+		
+	for o in range (int(2*l/3),l):
+		av1.append(np.mean(rolling_sig_1[int(2*l/3):l]))
+		av2.append(np.mean(rolling_sig_2[int(2*l/3):l]))
+		av3.append(np.mean(rolling_sig_3[int(2*l/3):l]))
+				
 	os.chdir("G:/Harsh_Data_Backup/Data/Results_photos_with_limited_channels/"+entropy)
 	# plt.figure("sub "+str(sub)+"trial 1")
 	# plt.plot(final_sig1[1:179])
 	plt.figure("sub "+str(sub)+"trial 1 rolling mean")
-	plt.plot(rolling_mean(final_sig1[1:179],mov_avg_n))
+	plt.plot(rolling_sig_1)
+	plt.plot(av1)
 	plt.savefig("sub "+str(sub)+"trial 1.png")
 	# plt.figure("sub "+str(sub)+"trial 2")
 	# plt.plot(final_sig2[1:179])
 	plt.figure("sub "+str(sub)+"trial 2 rolling mean")
-	plt.plot(rolling_mean(final_sig2[1:179],mov_avg_n))
+	plt.plot(rolling_sig_2)
+	plt.plot(av2)
 	plt.savefig("sub "+str(sub)+"trial 2.png")	
 	# plt.figure("sub "+str(sub)+"trial 3")
 	# plt.plot(final_sig3[1:179])
 	plt.figure("sub "+str(sub)+"trial 3 rolling mean")
-	plt.plot(rolling_mean(final_sig3[1:179],mov_avg_n))
+	plt.plot(rolling_sig_3)
+	plt.plot(av3)
 	plt.savefig("sub "+str(sub)+"trial 3.png")	
 	plt.show()
 
 print (channel_counter)
 print (np.sum(channel_counter))
+plt.plot (np.arange(len(channel_counter)),channel_counter)
+plt.show()
 
 
 
