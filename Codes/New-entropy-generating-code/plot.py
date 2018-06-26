@@ -115,7 +115,7 @@ for sub in range (1,8):
 	final_sig1 = np.zeros(180)
 	final_sig2 = np.zeros(180)
 	final_sig3 = np.zeros(180)
-	no_of_significant_channels = 5
+	no_of_significant_channels = 50
 	significant_weights1 = []
 	significant_weights2 = []
 	significant_weights3 = []	
@@ -139,7 +139,7 @@ for sub in range (1,8):
 			final_sig1[jkj] = final_sig1[jkj] + significant_weights1[chc]*total_sig1[trialx1[chc]][jkj]
 			final_sig2[jkj] = final_sig2[jkj] + significant_weights2[chc]*total_sig2[trialx2[chc]][jkj]
 			final_sig3[jkj] = final_sig3[jkj] + significant_weights3[chc]*total_sig3[trialx3[chc]][jkj]	
-	mov_avg_n = 15
+	mov_avg_n = 5
 	rolling_sig_1 = rolling_mean(final_sig1[1:179],mov_avg_n)
 	rolling_sig_2 = rolling_mean(final_sig2[1:179],mov_avg_n)
 	rolling_sig_3 = rolling_mean(final_sig3[1:179],mov_avg_n)

@@ -27,7 +27,7 @@ def sorted_array_with_indices(b):
     a = b
     l = len(a)
     x = np.arange(l)
-    x = x
+    #x = x
     for i1 in range (0,l-1):
         #print (i1)
         for i2 in range (0,l-1-i1):
