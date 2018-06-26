@@ -20,7 +20,7 @@ def rolling_mean (a,n):
         for k in range (0,n):
             part_sum += a[start+k]
         rolling_mean.append(part_sum/n)
-    return np.array(rolling_mean)     
+    return np.array(rolling_mean)
 
 
 def sorted_array_with_indices(b):
@@ -39,7 +39,7 @@ def sorted_array_with_indices(b):
                 a[i2+1]=temp
                 temp = x[i2]
                 x[i2]=x[i2+1]
-                x[i2+1]=temp        
+                x[i2+1]=temp
     return (a,x)  
 
 def read_file(file_name):
@@ -49,4 +49,7 @@ def read_file(file_name):
         for word in line.split():
             vec.append(float(word))
     f.close()
-    return vec        
+    return vec 
+
+ch_selected = []
+ch_seleced = np.array(ch_selected)

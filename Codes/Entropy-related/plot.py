@@ -95,7 +95,7 @@ for sub in range (1,31):
         for chc in range (0,no_of_significant_channels):
             for j in range (0,len(sig)):
                 final_sig[j] = final_sig[j] + (significant_weights[chc])*total_sig[xsweights[chc]][j]
-        mov_avg_n = 1000
+        mov_avg_n = 10
         rolling_sig = rolling_mean(final_sig,mov_avg_n)
         xfinal = np.arange(len(rolling_sig))       
         final_line = np.polyfit(xfinal,rolling_sig,1,full=True)        

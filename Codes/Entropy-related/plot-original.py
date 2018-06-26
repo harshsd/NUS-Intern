@@ -32,7 +32,7 @@ def sorted_array_with_indices(b):
         #print (i1)
         for i2 in range (0,l-1-i1):
             #print(i2)
-            if a[i2]>a[i2+1]:
+            if abs(a[i2])<abs(a[i2+1]):
                 #print ("exchanged")
                 temp = a[i2]
                 a[i2]=a[i2+1]
@@ -57,7 +57,7 @@ sum_of_slopes = 0
 sum_of_good_slopes = 0
 positive = 0
 negative = 0
-entropy = "renyi"
+entropy = input("Enter entropy name: ")
 total_slopes = []
 means = []
 stds = []
@@ -90,8 +90,11 @@ for sub in range (1,31):
             significant_weights.append(sweights[chc])
             channel_counter[xsweights[chc]] += 1
         significant_weights = np.array(significant_weights)
-        significant_weights = significant_weights/np.sum(significant_weights)
-
+        significant_weights = significant_weights/np.sum(abs(significant_weights))
+        # print (slope_weights)
+        # print (sweights)
+        # print (significant_weights)
+        time.sleep(1)
         for chc in range (0,no_of_significant_channels):
             for j in range (0,len(sig)):
                 final_sig[j] = final_sig[j] + significant_weights[chc]*total_sig[xsweights[chc]][j]
@@ -103,7 +106,7 @@ for sub in range (1,31):
         var = 0
         for k in range (0,len(rolling_sig)):
             var = var + abs(rolling_sig[k]-yfinal[k])
-        os.chdir("G:/Harsh_Data_Backup/Readable_Data/PICTURES")
+        os.chdir("G:/Harsh_Data_Backup/Readable_Data/PICTURES/"+entropy)
         plt.figure("sub "+str(sub)+"turn"+str(turn)+" rolling mean")
         plt.plot(xfinal,rolling_sig)
         plt.plot(xfinal,yfinal)
@@ -111,13 +114,14 @@ for sub in range (1,31):
         sum_of_slopes += (final_line[0][0])
         if(final_line[0][0]>0):
             positive += 1
-        else :
             sum_of_good_slopes += final_line[0][0]
+        else :
             negative += 1    
         plt.savefig("sub "+str(sub)+"turn"+str(turn)+" rolling mean.png")
+        plt.close("sub "+str(sub)+"turn"+str(turn)+" rolling mean")
         var_final.append(var)
 plt.figure()
-plt.bar(np.arange(len(var_final))/2,var_final)
+plt.plot(np.arange(len(var_final)),var_final,marker = 'o')
 plt.savefig("variance.jpg")
 print (channel_counter)
 print (np.sum(channel_counter))
