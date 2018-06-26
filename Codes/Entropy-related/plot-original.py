@@ -32,7 +32,7 @@ def sorted_array_with_indices(b):
         #print (i1)
         for i2 in range (0,l-1-i1):
             #print(i2)
-            if (a[i2])<(a[i2+1]):
+            if a[i2]>a[i2+1]:
                 #print ("exchanged")
                 temp = a[i2]
                 a[i2]=a[i2+1]
@@ -68,7 +68,7 @@ for sub in range (1,31):
     for turn in range (1,3):
         print ("sub , turn :"+str((sub,turn)))
         total_sig = []
-        os.chdir("G:/Harsh_Data_Backup/Readable_Data/Entropies")
+        os.chdir("G:/Harsh_Data_Backup/Readable_Data/Entropies_2_S")
         turn_slope=[]
         slope_weights = np.zeros((24))
         for ch in range (1,25):
@@ -84,7 +84,7 @@ for sub in range (1,31):
             ch_score[xsweights[j]] += j
         #time.sleep(500)
         final_sig = np.zeros(len(sig))
-        no_of_significant_channels = 1
+        no_of_significant_channels = 5
         significant_weights = []
         for chc in range (0,no_of_significant_channels):
             significant_weights.append(sweights[chc])
@@ -94,7 +94,7 @@ for sub in range (1,31):
 
         for chc in range (0,no_of_significant_channels):
             for j in range (0,len(sig)):
-                final_sig[j] = final_sig[j] + (significant_weights[chc])*total_sig[xsweights[chc]][j]
+                final_sig[j] = final_sig[j] + significant_weights[chc]*total_sig[xsweights[chc]][j]
         mov_avg_n = 1000
         rolling_sig = rolling_mean(final_sig,mov_avg_n)
         xfinal = np.arange(len(rolling_sig))       
@@ -118,7 +118,7 @@ for sub in range (1,31):
         var_final.append(var)
 plt.figure()
 plt.bar(np.arange(len(var_final))/2,var_final)
-plt.savefig("variance.png")
+plt.savefig("variance.jpg")
 print (channel_counter)
 print (np.sum(channel_counter))
 print ("Average slope is: "+str(sum_of_slopes/60))
