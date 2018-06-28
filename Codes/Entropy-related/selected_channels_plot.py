@@ -51,5 +51,14 @@ def read_file(file_name):
     f.close()
     return vec 
 
+
+#tsallis =      12, 11,  0, 17, 15
+#shannon = 	5, 17, 11,  3, 15
+#renyi =  12,  2,  5,  3, 15]
+#permut = 21, 14, 16,  7, 10
+
+entropy = input("Enter Entropy Name")
 ch_selected = []
 ch_seleced = np.array(ch_selected)
+for sub in range(1,31):
+	for trial in range (1,3):
