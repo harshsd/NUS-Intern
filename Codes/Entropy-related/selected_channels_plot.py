@@ -57,6 +57,7 @@ def read_file(file_name):
 #renyi =   8, 20,  4,  9, 23,  1, 21, 22, 16, 19, 18,  6,  0, 14, 10, 17,  7, 13, 11, 12,  2,  5,  3, 15
 #permut = 0, 15, 12, 19,  5,  2,  8,  9, 23, 18,  3,  6, 20,  1, 22,  4, 17, 11, 13, 21, 14, 16,  7, 10
 
+start_time = time.time()
 sorted_channels = {'shannon' : [8, 20,  4,  9,  1, 19, 22, 16, 23, 18,  0, 13, 21,  6, 14,  7, 10, 12,  2,  5, 17, 11,  3, 15] ,
 					'tsallis' : [ 8,  4, 20,  9, 19, 22, 18, 16,  7,  5, 23,  3, 10,  6,  1, 14,  2, 21, 13, 12, 11,  0, 17, 15],
 					'renyi' : [8, 20,  4,  9, 23,  1, 21, 22, 16, 19, 18,  6,  0, 14, 10, 17,  7, 13, 11, 12,  2,  5,  3, 15],
@@ -109,3 +110,4 @@ for sub in range(1,31):
 		plt.close(entropy+"s"+str(sub)+"t"+str(turn)+"c"+str(ch+1)+".png")
 slopes = np.array(slopes)
 print (np.sum(slopes)/no_of_significant_channels)
+print ("Running Time: "+str(time.time()-start_time)+" seconds")

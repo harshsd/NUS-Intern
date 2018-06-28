@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import os
 import itertools
 import math
-
+import time
 
 w_in_s = 2
 del_in_s = 2
@@ -149,64 +149,66 @@ def permutation_entropy(L,time_series, m, delay):
 
 
 if __name__ == '__main__':
+	start_time = time.time()
 	#band_name = input("Enter band name: (alpha,beta,delta,theta,gamma)")
 	entropy_name = input("Enter Entropy Name: (s,t,r,p)")
-	#for band_name in ["theta"]:#"alpha","beta","delta","theta",
-	for sub in range (1,31):
-			for ch in range (1,25):
-				for turn in range (1,3):   
-					os.chdir('G:/Harsh_Data_Backup/Readable_Data/Unfiltered_Data')
-					file_name = 's'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'  #change_here
-					print (file_name)
-					sig = read_file(file_name)
-					os.chdir('G:/Harsh_Data_Backup/Readable_Data/Entropies_2_S')
-					if (entropy_name == "s"):
-						sh_ent = sig_entropy(L,w,delta,sig,"shannon",q,alpha,d,delay)
-						print (w)
-						print (delta)
-						print (len(sig))
-						print (float((len(sig)-w)/delta))
-						print("shannon")
-						file_name = 'shannons'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
-						file = open (file_name,'a+')
-						M = len(sh_ent)
-						print (M)
-						for i in range (0,M):
-							file.write(str(sh_ent[i]))
-							file.write('\n')
-						file.close()		
-
-					elif (entropy_name == "t"):		
-						te_ent = sig_entropy(L,w,delta,sig,"tsallis",q,alpha,d,delay)
-						print("tsallis")
-						file_name = 'tsalliss'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
-						file = open (file_name,'a+')
-						M = len(te_ent)
-						for i in range (0,M):
-								file.write(str(te_ent[i]))
+	for band_name in ["theta","alpha","beta","delta","gamma"]:
+		for sub in range (1,31):
+				for ch in range (1,25):
+					for turn in range (1,3):   
+						os.chdir('G:/Harsh_Data_Backup/Readable_Data/'+band_name)
+						file_name = band_name+'s'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'  #change_here
+						print (file_name)
+						sig = read_file(file_name)
+						os.chdir('G:/Harsh_Data_Backup/Readable_Data/Entropies_2_S_filtered/'+band_name)
+						if (entropy_name == "s"):
+							sh_ent = sig_entropy(L,w,delta,sig,"shannon",q,alpha,d,delay)
+							print (w)
+							print (delta)
+							print (len(sig))
+							print (float((len(sig)-w)/delta))
+							print("shannon")
+							file_name = 'shannons'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
+							file = open (file_name,'a+')
+							M = len(sh_ent)
+							print (M)
+							for i in range (0,M):
+								file.write(str(sh_ent[i]))
 								file.write('\n')
-						file.close()
+							file.close()		
 
-					elif (entropy_name == "r"):
-						
-						ren_ent= sig_entropy(L,w,delta,sig,"renyi",q,alpha,d,delay)
-						print("renyi")
-						file_name = 'renyis'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
-						file = open (file_name,'a+')
-						M = len (ren_ent)
-						for i in range (0,M):
-								file.write(str(ren_ent[i]))
-								file.write('\n')
-						file.close()
+						elif (entropy_name == "t"):		
+							te_ent = sig_entropy(L,w,delta,sig,"tsallis",q,alpha,d,delay)
+							print("tsallis")
+							file_name = 'tsalliss'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
+							file = open (file_name,'a+')
+							M = len(te_ent)
+							for i in range (0,M):
+									file.write(str(te_ent[i]))
+									file.write('\n')
+							file.close()
 
-					elif (entropy_name == "p"):	
-						per_ent= sig_entropy(L,w,delta,sig,"permutation",q,alpha,d,delay)
-						print("permutation")		
-						M = len (per_ent)
-						file_name = 'permuts'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
-						file = open (file_name,'a+')
-						for i in range (0,M):
-							file.write(str(per_ent[i]))
-							file.write('\n')														
-						file.close()		
+						elif (entropy_name == "r"):
+							
+							ren_ent= sig_entropy(L,w,delta,sig,"renyi",q,alpha,d,delay)
+							print("renyi")
+							file_name = 'renyis'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
+							file = open (file_name,'a+')
+							M = len (ren_ent)
+							for i in range (0,M):
+									file.write(str(ren_ent[i]))
+									file.write('\n')
+							file.close()
+
+						elif (entropy_name == "p"):	
+							per_ent= sig_entropy(L,w,delta,sig,"permutation",q,alpha,d,delay)
+							print("permutation")		
+							M = len (per_ent)
+							file_name = 'permuts'+str(sub)+'t'+str(turn)+'c'+str(ch)+'.txt'
+							file = open (file_name,'a+')
+							for i in range (0,M):
+								file.write(str(per_ent[i]))
+								file.write('\n')														
+							file.close()		
+	print ("Running Time: "+str(time.time()-start_time)+" seconds")							
 #testt
