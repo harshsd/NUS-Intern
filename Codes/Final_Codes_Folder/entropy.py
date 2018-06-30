@@ -18,14 +18,11 @@ def sig_entropy ( L , w, delta, sig, entropy_name,q,alpha,d,delay):
 	entropy = []
 	K = len(sig)
 	M = (K-w)//delta  # Should be an int
-	M = int(M)
-	print (M)
-	#print (maxp,minp)
+	M = int(M)     #Lenght of output sorted_index_array
+	#print (M)
 	for m in range (0,M):
 		partition = sig[m*delta:(w+(m*delta))+1]
 		entropy.append(partition_entropy(partition,L,q,entropy_name,alpha,d,delay))
-		#print(m/M)
-		# print(entropy_name)
 	return entropy
 
 
@@ -72,7 +69,7 @@ def P_m_l(partition,k,slot_height,maxp,minp): #k from 0 to L-1
 		slot_height: Height of each slot/part of the partition
 		maxp,minp : Maximum and Minimum values in the signal
 		Return:
-		Single float value containing probability of signal being in that slop of the partition'''
+		Single float value containing probability of signal being in that slot of the partition'''
 
 		count = 0
 		w = len(partition)
@@ -109,7 +106,7 @@ def Tsallis_entropy(L,partition,slot_height,maxp,minp,q):
 	q : q parameter for tsallis entropy
 
 	Returns:
-	Float value containing shannon entropy'''
+	Float value containing tsallis entropy'''
 
 	ts_ent = 0.00
 	for it in range (0,L-1):
@@ -129,7 +126,7 @@ def Renyi_entropy(L,partition,slot_height,maxp,minp,alpha):
 	alpha: alpha parameter for renyi entropy
 
 	Returns:
-	Float value containing shannon entropy'''
+	Float value containing renyi entropy'''
 
 	p_ent = 0.00
 	for it in range(0,L-1):

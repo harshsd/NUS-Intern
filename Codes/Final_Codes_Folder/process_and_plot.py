@@ -12,7 +12,7 @@ def rolling_mean (input_sig,n):
 	Args:
 	input_sig:List/array whose mean is to be calculated
 	n:The window size to be considered while calculating rolling mean.Should be greater than 0 and less than or equal to the lenght of signal
-	Returbs:
+	Returns:
 	npArray with rolling mean of input signal'''
 
     input_sig = np.array(input_sig)
@@ -30,7 +30,7 @@ def sorted_array_with_indices(b):
 	Args:
 	b = input_array
 	Returns:
-	Tuple with first element as sorted array and second containing array with indices of orignal positions'''
+	Tuple with first element as sorted array and second containing array with indices of original positions'''
 	
 	b = np.array(b)
     a = np.copy(b)

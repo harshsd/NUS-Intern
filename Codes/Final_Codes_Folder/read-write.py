@@ -20,7 +20,7 @@ def write_to_file(file_name,vector_output):
 	'''Writes a vector to a file with each value on a new line.
 	Args:
 	file_name: Name of file. change Directory by os.chdir() if not in same directory
-	vectore_output: The vector to be written to the file'''
+	vector_output: The vector to be written to the file'''
 	
 	file = open (file_name,'a+')
 	M = len(vector_output)
