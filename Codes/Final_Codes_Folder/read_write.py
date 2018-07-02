@@ -7,13 +7,13 @@ def read_file(file_name):
 	Returns:
 	Vector with values as in file'''
 
-    f = open(file_name , 'r')
-    vec = []
-    for line in f:
-        for word in line.split():
-            vec.append(float(word))
-    f.close()
-    return vec
+	f = open(file_name , 'r')
+	vec = []
+	for line in f:
+		for word in line.split():
+			vec.append(float(word))
+	f.close()
+	return vec
 
 
 def write_to_file(file_name,vector_output):
@@ -25,6 +25,6 @@ def write_to_file(file_name,vector_output):
 	file = open (file_name,'a+')
 	M = len(vector_output)
 	for i in range (0,M):
-	file.write(str(vector_output[i]))
-	file.write('\n')
+		file.write(str(vector_output[i]))
+		file.write('\n')
 	file.close()    
