@@ -75,8 +75,7 @@ def accuracy_svm (data_set1 , data_set2 , cc , gg):
 	return (mean , std)		
 
 
-'''
-def accuracy_svm (data_set1 , data_set2 , data_set3 , cc , gg):
+def accuracy_svm_3 (data_set1 , data_set2 , data_set3 , cc , gg):
 	accuracy = []
 	l = len(data_set1)
 	if l != len (data_set2):
@@ -136,21 +135,24 @@ def accuracy_svm (data_set1 , data_set2 , data_set3 , cc , gg):
 		# print(l)
 		# print (np.array(train_final).shape)
 		# print(fatigue_train.shape)
-		clf = svm.SVC(kernel='rbf', C=cc, gamma = gg ,decision_function_shape='ovo')				
+		clf = svm.SVC(kernel='rbf', C=cc, gamma = gg ,decision_function_shape='ovr')				
 		clf.fit (train_final , fatigue_train)
+		#print (clf.dual_coef_)
 		fatigue_result = clf.predict(test_final)
 		y = 0
 		n = 0
 		for i in range (0,len(fatigue_result)):
+			#print (fatigue_result[i])
 			if (fatigue_result[i] == fatigue_test1[i]):
 				y=y+1
 			else:
 				n=n+1
-		accuracy_curr = y/(y+n)		
+		accuracy_curr = y/(y+n)
+		#print (y,n)		
 		accuracy.append (float(100*accuracy_curr))
 	accuracy = np.array(accuracy)
 	#print (accuracy)
 	mean = accuracy.mean()
 	std = accuracy.std()
 	return (mean , std)
-'''		
+	
