@@ -50,11 +50,12 @@ for ch in range(25,29):
 		# plt.plot(sfreql,Spsl,color='r')
 		# plt.plot(sfreqm,Spsm,color='b')
 		# plt.plot(sfreqh,Spsh,color='y')
-		plt.figure("ch"+str(ch)+"sub"+str(sub))
-		plt.plot(Spsl,color='g')
-		plt.plot(Spsm,color='m')
-		plt.plot(Spsh,color='c')
-		plt.show()
+		#plt.figure("ch"+str(ch)+"sub"+str(sub))
+		#plt.plot(Spsl[12:25],color='g')
+		#plt.plot(Spsm,color='m')
+		#plt.plot(Spsh[12:25],color='c')
+		#plt.show()
+		print(np.sum(np.square(Spsl[12:25])),np.sum(np.square(Spsm[12:25])),np.sum(np.square(Spsh[12:25])))
 
 # f = 5
 # T = 1
