@@ -21,35 +21,40 @@ def butter_filter(input_sig,sample_freq,lowf,highf,order=4):
 	output = signal.filtfilt(b,a,input_sig)
 	return output
 
-for ch in range(1,63):
-	os.chdir("G:/Harsh_Data_Backup/Data/New_Data_filtered/b")
-	dt = 1/256
-	file_name = "s2c"+str(ch)+".txt"
-	seg = rw.read_file(file_name)
-	seg = np.array(seg)
-	segl = seg[0:512]
-	segm = seg[66*512:67*512]
-	segh = seg[135*512:136*512]
-	Spsl = np.absolute(fft(segl))/3000
-	Spsm = np.absolute(fft(segm))/3000
-	Spsh = np.absolute(fft(segh))/3000
-	sfreql = fftfreq(segl.size,d=dt)
-	sfreqm = fftfreq(segm.size,d=dt)
-	sfreqh = fftfreq(segh.size,d=dt)
-	keep = sfreql>0
-	Spsl = Spsl[keep]
-	sfreql = sfreql[keep]
-	keep = sfreqm>0
-	sfreqm = sfreqm[keep]
-	Spsm = Spsm[keep]
-	keep = sfreqh>0
-	sfreqh = sfreqh[keep]
-	Spsh = Spsh[keep]
-
-	plt.plot(sfreql,Spsl,color='r')
-	plt.plot(sfreqm,Spsm,color='b')
-	plt.plot(sfreqh,Spsh,color='y')
-	plt.show()
+for ch in range(25,29):
+	for sub in range (1,8):	
+		os.chdir("G:/Harsh_Data_Backup/Data/New_Data_filtered/a")
+		dt = 1/256
+		file_name = "s"+str(sub)+"c"+str(ch)+".txt"
+		seg = rw.read_file(file_name)
+		seg = np.array(seg)
+		segl = seg[0:512]
+		segm = seg[66*512:67*512]
+		segh = seg[135*512:136*512]
+		Spsl = np.absolute(fft(segl))/3000
+		Spsm = np.absolute(fft(segm))/3000
+		Spsh = np.absolute(fft(segh))/3000
+		sfreql = fftfreq(segl.size,d=dt)
+		sfreqm = fftfreq(segm.size,d=dt)
+		sfreqh = fftfreq(segh.size,d=dt)
+		keep = sfreql>0
+		Spsl = Spsl[keep]
+		sfreql = sfreql[keep]
+		keep = sfreqm>0
+		sfreqm = sfreqm[keep]
+		Spsm = Spsm[keep]
+		keep = sfreqh>0
+		sfreqh = sfreqh[keep]
+		Spsh = Spsh[keep]
+		#plt.xlim(xmin=4,xmax=14)
+		# plt.plot(sfreql,Spsl,color='r')
+		# plt.plot(sfreqm,Spsm,color='b')
+		# plt.plot(sfreqh,Spsh,color='y')
+		plt.figure("ch"+str(ch)+"sub"+str(sub))
+		plt.plot(Spsl,color='g')
+		plt.plot(Spsm,color='m')
+		plt.plot(Spsh,color='c')
+		plt.show()
 
 # f = 5
 # T = 1

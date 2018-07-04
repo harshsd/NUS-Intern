@@ -2,7 +2,7 @@ from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 
 
-def rfc(data_set1 , data_set2 , data_set3 , max_depth = 2 , random_state = 0):
+def rfc(data_set1 , data_set2 , data_set3 , max_depth = 5 ,num_of_trees = 100, max_features = None):
 	accuracy = []
 	l = len(data_set1)
 	if l != len (data_set2):
@@ -61,7 +61,7 @@ def rfc(data_set1 , data_set2 , data_set3 , max_depth = 2 , random_state = 0):
 		class_test = np.array(fatigue_test1)	
 		
 
-		clf = RandomForestClassifier(max_depth=max_depth, random_state= random_state)	
+		clf = RandomForestClassifier(max_depth=max_depth,n_estimators=num_of_trees,max_features=max_features)	
 		clf.fit(train_final,class_train)
 
 		class_result = clf.predict(test_final)

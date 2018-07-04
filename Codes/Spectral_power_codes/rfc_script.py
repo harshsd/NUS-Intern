@@ -25,9 +25,9 @@ import random_forest_classifier as rfc
 # ax.plot(freq,(np.absolute(Y)**2)/3000)
 # ax.set_xlim(0,30)
 # plt.show()
-
+#FOR THETA
 os.chdir('G:/Harsh_Data_Backup/Data/New_Data')
-for sub in range (1,8):
+for ch in range (1,63):
 	mean_acc = 0
 	cc_max = 0
 	gg_max = 0
@@ -37,7 +37,7 @@ for sub in range (1,8):
 			g = 1+10*gg
 			# print (g)
 			mean_for_fixed_par = 0
-			for ch in range (1,63):
+			for sub in range (1,8):
 				file_name = "s"+str(sub)+"c"+str(ch)+".txt"
 				sig = rw.read_file(file_name)
 				sig = np.array(sig)
@@ -59,17 +59,17 @@ for sub in range (1,8):
 					#plt.plot(sfreq,Sps)
 					#plt.show()
 					if ((i<60) or (i>=180 and i<240) or (i>=360 and i<420)):
-						lpsd.append(Sps[0:60])
+						lpsd.append(Sps[6:15])
 						#plt.plot(sfreq,Sps,color='r')
 						#plt.show()
 						#print ("lpsd")
 					elif((i>=60 and i<120) or (i>=240 and i<300) or (i>=420 and i<480)):
-						mpsd.append(Sps[0:60])
+						mpsd.append(Sps[6:15])
 						#plt.plot(sfreq,Sps,color = 'b')
 						#plt.show()
 						#print ("mpsd")
 					else:
-						hpsd.append(Sps[0:60])
+						hpsd.append(Sps[6:15])
 						#plt.plot(sfreq,Sps, color = 'y')
 						#plt.show()
 						#print ("hpsd")		
