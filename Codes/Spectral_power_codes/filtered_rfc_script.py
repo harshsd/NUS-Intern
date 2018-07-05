@@ -142,9 +142,9 @@ for sub in range (1,8):
 	# 		if(meanlocal>mean):
 	# 			mean = meanlocal
 	# 			std = stdlocal
-	num_of_trees = 2000
-	depth = 100
-	num_of_features = "auto"
+	num_of_trees = 5000
+	depth = 200
+	num_of_features = "sqrt"
 	mean,std = rfc.rfc(lpsdt,mpsdt,hpsdt,num_of_trees=num_of_trees,max_depth=depth,max_features=num_of_features)
 	print ("real rfc accuracy")
 	print (sub,mean)
