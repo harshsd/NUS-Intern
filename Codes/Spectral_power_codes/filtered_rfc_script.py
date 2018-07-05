@@ -121,14 +121,19 @@ for sub in range (1,8):
 	# 		if(meanlocal>mean):
 	# 			mean = meanlocal
 	# 			std = stdlocal
-	for trees in range (5,10):
-		for depth in range (5,10):
-			trees_act = trees*100
-			meanlocal,stdlocal = rfc.rfc(lpsdt,mpsdt,hpsdt,num_of_trees=trees_act,max_depth=depth)
-			if(meanlocal>mean):
-				mean = meanlocal
-				std = stdlocal
+	# for trees in range (5,10):
+	# 	for depth in range (5,10):
+	# 		trees_act = trees*100
+	# 		meanlocal,stdlocal = rfc.rfc(lpsdt,mpsdt,hpsdt,num_of_trees=trees_act,max_depth=depth)
+	# 		if(meanlocal>mean):
+	# 			mean = meanlocal
+	# 			std = stdlocal
+	num_of_trees = 1000
+	depth = 100
+	num_of_features = None
+	mean,std = rfc.rfc(lpsdt,mpsdt,hpsdt,num_of_trees=num_of_trees,max_depth=depth,max_features=num_of_features)
 	print ("real rfc accuracy")
 	print (sub,mean)
 	mean_accuracy = mean_accuracy + mean/7
 print (mean_accuracy)
+print (num_of_trees,depth,num_of_features)
