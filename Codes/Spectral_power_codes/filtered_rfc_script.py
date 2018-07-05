@@ -45,6 +45,9 @@ for sub in range (1,8):
 		lpsd = []
 		mpsd = []
 		hpsd = []
+		lpsd_extra = []
+		mpsd_extra = []
+		hpsd_extra = []
 		for i in range (0,540):
 			seg = sig[512*i:512*i+512]
 			#print (len(seg))
@@ -66,6 +69,7 @@ for sub in range (1,8):
 			elif band_name	== 't':
 				Sps = Sps[7:16]
 			elif band_name == 'b':
+				Sps1 = Sps[16:24]
 				Sps = Sps[24:60]
 			elif band_name == 'g':
 				Sps = Sps[60:]
@@ -77,19 +81,29 @@ for sub in range (1,8):
 			#plt.show()
 			if ((i<60) or (i>=180 and i<240) or (i>=360 and i<420)):
 				lpsd.append(np.sum(np.square(Sps)))
+				if (band_name=='b'):
+					lpsd_extra.append(np.sum(np.square(Sps1)))
 				#plt.plot(sfreq,Sps,color='r')
 				#plt.show()
 				#print ("lpsd")
 			elif((i>=60 and i<120) or (i>=240 and i<300) or (i>=420 and i<480)):
 				mpsd.append(np.sum(np.square(Sps)))
+				if (band_name=='b'):
+					mpsd_extra.append(np.sum(np.square(Sps1)))
 				#plt.plot(sfreq,Sps,color = 'b')
 				#plt.show()
 				#print ("mpsd")
 			else:
 				hpsd.append(np.sum(np.square(Sps)))
+				if (band_name=='b'):
+					hpsd_extra.append(np.sum(np.square(Sps1)))
 				#plt.plot(sfreq,Sps, color = 'y')
 				#plt.show()
-				#print ("hpsd")		
+				#print ("hpsd")	
+		if (band_name=='b'):					
+			lpsd = lpsd+lpsd_extra
+			mpsd = mpsd+mpsd_extra
+			hpsd = hpsd+hpsd_extra		
 		lpsd = np.array(lpsd)
 		mpsd = np.array(mpsd)
 		hpsd = np.array(hpsd)	
@@ -128,9 +142,9 @@ for sub in range (1,8):
 	# 		if(meanlocal>mean):
 	# 			mean = meanlocal
 	# 			std = stdlocal
-	num_of_trees = 1000
+	num_of_trees = 2000
 	depth = 100
-	num_of_features = None
+	num_of_features = "auto"
 	mean,std = rfc.rfc(lpsdt,mpsdt,hpsdt,num_of_trees=num_of_trees,max_depth=depth,max_features=num_of_features)
 	print ("real rfc accuracy")
 	print (sub,mean)
