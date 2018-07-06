@@ -1,8 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier
 import numpy as np
 
-
-def rfc(data_set1 , data_set2 , data_set3 , max_depth = 5 ,num_of_trees = 100, max_features = None):
+def rfc(data_set1 , data_set2 , data_set3 , max_depth = 5 ,num_of_trees = 100, max_features = "auto"):
 	accuracy = []
 	l = len(data_set1)
 	if l != len (data_set2):
