@@ -106,7 +106,7 @@ for sub in range (1,8):
 	hpsdt = reshape(hpsdt)
 	x,y = lpsdt.shape
 	#print (x,y)
-	#time.sleep(100)
+	#time.sleep(100)d
 	print ("data processed")		
 	mean = trfc.final_accuracy(lpsdt,mpsdt,hpsdt)
 	print (sub,mean)	
